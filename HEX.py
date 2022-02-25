@@ -8,7 +8,7 @@ import random
 #import math
 import time
 
-conn = sqlite3.connect('SQLiteStudio\\Jeu_HEX')
+conn = sqlite3.connect('Jeu_HEX')
 cur = conn.cursor()
 
 
@@ -479,7 +479,7 @@ scale = (width-250)/((size-1)*3+2)
 tour = 0
 stop = False
 ordre = []
-mode = "B"
+mode = "J"
 
 
 plat = np.zeros((size, size)) #Cree une matrice carre de taille size remplie de 0
