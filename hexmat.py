@@ -11,6 +11,8 @@ from copy import deepcopy
 #test
 #test
 
+def test ():
+    pass
 
 def Rgb_convert(rgb):
     return "#%02x%02x%02x" % rgb 
@@ -36,10 +38,10 @@ def Affichage_plateau (plat, size, scale):
                                       x+(scale*0.5), y+(scale*2*0.866), x, y+(scale*0.866), fill = Rgb_convert((160,160,160)), activefill = Rgb_convert((180,180,180)), outline = 'black', width=3, tags = (str(i) + "," + str(j) , "cellule") )
                 
             if i == 0:
-                partie1.create_text( x, y + 0.2*scale, font = Police, fil = 'black', text = ascii_letters[j] )
+                partie1.create_text(x, y + 0.2*scale, font = Police, fill = 'black', text = ascii_letters[j] )
             
             if j == 0:
-                partie1.create_text( x, (y+1.5*scale), font = Police, fil = 'black', text = i+1)
+                partie1.create_text( x, (y+1.5*scale), font = Police, fill = 'black', text = i+1)
 
 
 def Reset_Value (New_plat, New_ordre):
