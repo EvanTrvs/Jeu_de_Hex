@@ -1,4 +1,5 @@
 from numpy import zeros
 
-def Matricetaille(n):
-  return zeros((n,n), dtype=int)
+
+def matrice_taille(n):
+  return zeros((n, n), dtype=int)

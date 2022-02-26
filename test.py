@@ -1,3 +1,3 @@
-from testfonction import Matricetaille
+from testfonction import matrice_taille
 
-print(Matricetaille(6))
+print(matrice_taille(6))
