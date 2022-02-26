@@ -25,3 +25,7 @@ Le fichier à exécuter est (pas encore défini)
 ## Configuration d'une partie
 * (pas encore défini)
 * (pas encore défini)
+
+
+## Créateurs
+Thibaud et Evan
