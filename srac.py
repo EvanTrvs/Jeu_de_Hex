@@ -1,0 +1,2 @@
+def hgh ():
+    print("salut")
