@@ -1,11 +1,11 @@
 import tkinter as tk
-import tkinter.font as tkFont
+import tkinter.font as tkf
 from string import ascii_letters
-from calculs import Rgb_convert,Propagation,Reset_Value
+from calculs import rgb_convert, propagation, reset_value
 from numpy import zeros
 
 
-def Plein_ecran(event):
+def plein_ecran(event):
     if fe.attributes()[7] == 0:
         fe.attributes('-fullscreen', True)
 
@@ -13,7 +13,7 @@ def Plein_ecran(event):
         fe.attributes('-fullscreen', False)
 
 
-def Affichage_plateau(plat, size, scale):
+def affichage_plateau(plat, size, scale):
     for i in range(size):
         for j in range(size):
             x = (width - (scale * ((size - 1) * 3 + 2))) / 2 + (j * scale * 1.5) + (i * scale * 1.5)
@@ -24,7 +24,7 @@ def Affichage_plateau(plat, size, scale):
                 partie1.create_polygon(x + (0.5 * scale), y, x + (1.5 * scale), y, x + (2 * scale), y + (scale * 0.866),
                                        x + (scale * 1.5), y + (scale * 2 * 0.866),
                                        x + (scale * 0.5), y + (scale * 2 * 0.866), x, y + (scale * 0.866),
-                                       fill=Rgb_convert((160, 160, 160)), activefill=Rgb_convert((180, 180, 180)),
+                                       fill=rgb_convert((160, 160, 160)), activefill=rgb_convert((180, 180, 180)),
                                        outline='black', width=3, tags=(str(i) + "," + str(j), "cellule"))
 
             if i == 0:
@@ -34,7 +34,7 @@ def Affichage_plateau(plat, size, scale):
                 partie1.create_text(x, y + 1.5 * scale, font=Police, fill='black', text=i + 1)
 
 
-def Clear_plateau():
+def clear_plateau():
     if len(ordre) != 0:
         partie1.itemconfig(str(ordre[len(ordre) - 1][0]) + "," + str(ordre[len(ordre) - 1][1]), dash="",
                            outline='black', width=3)
@@ -43,7 +43,7 @@ def Clear_plateau():
         for j in range(len(plat)):
             # if plat[i][j] != 0 :
             tag = str(i) + ',' + str(j)
-            partie1.itemconfig(tag, fill=Rgb_convert((160, 160, 160)), activefill=Rgb_convert((180, 180, 180)))
+            partie1.itemconfig(tag, fill=rgb_convert((160, 160, 160)), activefill=rgb_convert((180, 180, 180)))
 
 
 def load_plateau(plat):
@@ -59,7 +59,8 @@ def load_plateau(plat):
             elif plat[i][j] == 2:
                 partie1.itemconfig(str(i) + "," + str(j), fill="blue")
 
-def Show_distance(team, search):
+
+def show_distance(team, search):
     print(search)
     r = 220 / (max(search) - 10)
     for i in range(len(plat)):
@@ -67,9 +68,9 @@ def Show_distance(team, search):
             if search[i][j] >= 10:
                 tag = str(i) + ',' + str(j)
                 if team == 1:
-                    partie1.itemconfig(tag, fill=Rgb_convert((255 - int((search[i][j] - 10) * r), 0, 0)))
+                    partie1.itemconfig(tag, fill=rgb_convert((255 - int((search[i][j] - 10) * r), 0, 0)))
                 else:
-                    partie1.itemconfig(tag, fill=Rgb_convert((0, 0, 255 - int((search[i][j] - 10) * r))))
+                    partie1.itemconfig(tag, fill=rgb_convert((0, 0, 255 - int((search[i][j] - 10) * r))))
 
 
 width = 900
@@ -91,7 +92,7 @@ plat = zeros((size, size))  # Crée une matrice carré de taille size remplie de
 fe = tk.Tk()
 
 fe.title('HexGame')
-fe.config(bg=Rgb_convert((50, 50, 50)))
+fe.config(bg=rgb_convert((50, 50, 50)))
 xu = width + (width * (0.618 ** 3))
 yu = height + (width * (0.618 ** 5))
 
@@ -104,10 +105,10 @@ frame = tk.Frame(fe, width=round(width + (width * (0.618 ** 3))), height=round(h
                  bg='blue')
 frame.place(relx=0.5, rely=0.5, anchor="center")
 
-frame.configure(bg=Rgb_convert((100, 80, 70)))
+frame.configure(bg=rgb_convert((100, 80, 70)))
 
-partie1 = tk.Canvas(frame, width=width, height=height, bg=Rgb_convert((200, 160, 150)), highlightbackground='red',
-                    highlightthickness=0)
+partie1 = tk.Canvas(frame, width=width, height=height, bg=rgb_convert((200, 160, 150)),
+                    highlightbackground='red', highlightthickness=0)
 partie1.grid(row=0, column=0, rowspan=3, columnspan=3)
 
 enregi1 = tk.Button(frame, text="Enregistrement 1", command=fe.destroy, borderwidth=5, relief='groove', bg='pink')
@@ -125,7 +126,7 @@ des.grid(row=4, column=0, padx=10, pady=10)
 des1 = tk.Button(frame, text='Reset')
 des1.grid(row=4, column=1, padx=10, pady=10)
 
-des2 = tk.Button(frame, text='Distance Rouge', command=Show_distance)
+des2 = tk.Button(frame, text='Distance Rouge', command=show_distance)
 des2.grid(row=4, column=2, padx=10, pady=10)
 
 partie4 = tk.Frame(frame, width=(width * (0.618 ** 3)), height=(width * (0.618 ** 5)), bg='pink')
@@ -242,7 +243,7 @@ partie1.create_polygon(
 partie1.create_polygon(
     (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.3746) - 30,
     (height - (scale * size * 2 * 0.866)) / 2 - (0.866 * scale) + (2 * 0.866 * scale * size),
-    (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.3746),
+    (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * 0.3746,
     (height - (scale * size * 2 * 0.866)) / 2 - 0.5 * scale + (2 * 0.866 * scale * size),
     (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.3746) + 2,
     (height - (scale * size * 2 * 0.866)) / 2 - (0.866 * scale) + (2 * 0.866 * scale * size) + scale * (
@@ -290,7 +291,7 @@ partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + 0.5 * scal
 partie1.create_polygon(
     (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.3746) - 10,
     (height - (scale * size * 2 * 0.866)) / 2 + scale,
-    (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.3746),
+    (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * 0.3746,
     (height - (scale * size * 2 * 0.866)) / 2 + scale,
     (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.3746) + 1,
     (height - (scale * size * 2 * 0.866)) / 2 - scale * 0.6494 + 4,
@@ -304,4 +305,4 @@ partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * sc
                        (height - (scale * size * 2 * 0.866)) / 2 - scale * 0.6494 + 4,
                        fill='blue', outline='blue', width=6)
 
-Police = tkFont.Font(weight="bold", size=-(int(scale / 2)))
+Police = tkf.Font(weight="bold", size=-int(scale / 2))

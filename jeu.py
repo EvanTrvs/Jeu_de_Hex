@@ -1,9 +1,11 @@
 from interface import *
-from calculs import Rgb_convert,Propagation,Reset_Value
+from calculs import rgb_convert, propagation, reset_value
 from numpy import where
 from copy import deepcopy
 
-def Detection_victoire(plat, slot):
+
+def detection_victoire(plat, slot):
+
     size = len(plat)
     team = plat[slot[0]][slot[1]]  # team = 1, le joueur blanc viens de jouer, team = 2 le joueur noir viens de jouer
 
@@ -54,7 +56,7 @@ def Detection_victoire(plat, slot):
                 search = deepcopy(plat)  # creation d'une matrice de travail copié d'un plateau
                 distance = 9
 
-                Propagation(slot, search, team,
+                propagation(slot, search, team,
                             distance)  # fonction récursive de propagation sur le plateau de travail en fonction du dernier coup joué
                 print(search)
 
@@ -66,15 +68,15 @@ def Detection_victoire(plat, slot):
 
                         if team == 2:
                             print("victoire bleu")
-                            Fin_Partie(team, search)
+                            fin_partie(team, search)
 
                         else:
                             print("victoire rouge")
-                            Fin_Partie(team, search)
-                Show_distance(team, search)
+                            fin_partie(team, search)
+                show_distance(team, search)
 
 
-def Fin_Partie(team, search):
+def fin_partie(team, search):
     global Game_status
     Game_status = False
 
@@ -123,7 +125,7 @@ def Fin_Partie(team, search):
         """
 
 
-def Clic_gauche(event):
+def clic_gauche(event):
     global tour, Game_status
 
     tags = partie1.gettags('current')
@@ -145,25 +147,26 @@ def Clic_gauche(event):
 
             if tour % 2 == 0:
                 partie1.tag_raise(tags[0])
-                partie1.itemconfig(tags[0], fill='red', dash=(3, 3, 3, 3), outline=Rgb_convert((230, 230, 230)),
+                partie1.itemconfig(tags[0], fill='red', dash=(3, 3, 3, 3), outline=rgb_convert((230, 230, 230)),
                                    activefill="", width=2)
                 tour += 1
                 plat[slot[0]][slot[1]] = 1
                 ordre.append((slot[0], slot[1]))
                 print("Tour", tour, ': Rouge (1)')
                 print(plat)
-                Detection_victoire(plat, slot)
+                detection_victoire(plat, slot)
 
             else:
                 partie1.tag_raise(tags[0])
-                partie1.itemconfig(tags[0], fill='blue', dash=(3, 3, 3, 3), outline=Rgb_convert((230, 230, 230)),
+                partie1.itemconfig(tags[0], fill='blue', dash=(3, 3, 3, 3), outline=rgb_convert((230, 230, 230)),
                                    activefill="", width=2)
                 tour += 1
                 plat[slot[0]][slot[1]] = 2
                 ordre.append((slot[0], slot[1]))
                 print("Tour", tour, ": Bleu (2)")
                 print(plat)
-                Detection_victoire(plat, slot)
+                detection_victoire(plat, slot)
+
 
 """
 def Reset():
@@ -173,12 +176,12 @@ def Reset():
     Game_status = True
 """
 
-#des1.config(command = Reset)
+# des1.config(command = Reset)
 
-Affichage_plateau (plat, size, scale)
+affichage_plateau(plat, size, scale)
 
-fe.bind ("<Button-1>", Clic_gauche)
-fe.bind ("<KeyPress-F11>", Plein_ecran)
-fe.bind ("<f>", Plein_ecran)
+fe.bind("<Button-1>", clic_gauche)
+fe.bind("<KeyPress-F11>", plein_ecran)
+fe.bind("<f>", plein_ecran)
 
 fe.mainloop()
