@@ -87,7 +87,7 @@ scale = (width - 250) / ((size - 1) * 3 + 2)
 tour = 0
 ordre = []
 
-plat = zeros((size, size))  # Crée une matrice carré de taille size remplie de 0
+plat = zeros((size, size), dtype=int)  # Crée une matrice carré de taille size remplie de 0
 
 fe = tk.Tk()
 

@@ -172,7 +172,7 @@ def clic_gauche(event):
 def Reset():
     global plat, ordre, tour, Game_status
     Clear_plateau()
-    plat, ordre, tour = Reset_Value(zeros((size, size)), [])
+    plat, ordre, tour = Reset_Value(zeros((size, size), dtype=int), [])
     Game_status = True
 """
 
