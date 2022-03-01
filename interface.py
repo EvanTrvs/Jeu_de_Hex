@@ -96,12 +96,12 @@ fe.config(bg=rgb_convert((50, 50, 50)))
 xu = width + (width * (0.618 ** 3))
 yu = height + (width * (0.618 ** 5))
 
-window = str(round(width + (width * (0.618 ** 3)))) + 'x' + str(round(height + (width * (0.618 ** 5)))) + '+' + str(
+window = str(round(width + (width * (0.618 ** 3)))) + 'x' + str(round(height + (width * (0.618 ** 6)))) + '+' + str(
     10) + '+' + str(100)
 
 fe.geometry(window)
 
-frame = tk.Frame(fe, width=round(width + (width * (0.618 ** 3))), height=round(height + (width * (0.618 ** 5))),
+frame = tk.Frame(fe, width=round(width + (width * (0.618 ** 3))), height=round(height + (width * (0.618 ** 6))),
                  bg='blue')
 frame.place(relx=0.5, rely=0.5, anchor="center")
 
@@ -109,28 +109,28 @@ frame.configure(bg=rgb_convert((100, 80, 70)))
 
 partie1 = tk.Canvas(frame, width=width, height=height, bg=rgb_convert((200, 160, 150)),
                     highlightbackground='red', highlightthickness=0)
-partie1.grid(row=0, column=0, rowspan=3, columnspan=3)
+partie1.grid(row=1, column=0, rowspan=3, columnspan=3)
 
 enregi1 = tk.Button(frame, text="Enregistrement 1", command=fe.destroy, borderwidth=5, relief='groove', bg='pink')
-enregi1.grid(row=0, column=4, padx=10, pady=10)
+enregi1.grid(row=1, column=4, padx=10, pady=10)
 
 enregi2 = tk.Button(frame, text="Enregistrement 2", command=fe.destroy, borderwidth=5, relief='ridge', bg='blue')
-enregi2.grid(row=1, column=4, padx=10, pady=10)
+enregi2.grid(row=2, column=4, padx=10, pady=10)
 
 enregi3 = tk.Button(frame, text="Enregistrement 3", command=fe.destroy)
-enregi3.grid(row=2, column=4, padx=10, pady=10)
+enregi3.grid(row=3, column=4, padx=10, pady=10)
 
 des = tk.Button(frame, text='Menu principal', command=fe.destroy)
-des.grid(row=4, column=0, padx=10, pady=10)
+des.grid(row=0, column=0, padx=10, pady=10)
 
 des1 = tk.Button(frame, text='Reset')
-des1.grid(row=4, column=1, padx=10, pady=10)
+des1.grid(row=0, column=1, padx=10, pady=10)
 
 des2 = tk.Button(frame, text='Distance Rouge', command=show_distance)
-des2.grid(row=4, column=2, padx=10, pady=10)
+des2.grid(row=0, column=2, padx=10, pady=10)
 
-partie4 = tk.Frame(frame, width=(width * (0.618 ** 3)), height=(width * (0.618 ** 5)), bg='pink')
-partie4.grid(row=4, column=4)
+partie4 = tk.Frame(frame, width=(width * (0.618 ** 3)), height=(width * (0.618 ** 6)), bg='pink')
+partie4.grid(row=0, column=4)
 
 partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 - scale + scale * 0.25,
                    (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - 1.25 * scale,
