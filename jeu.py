@@ -2,7 +2,7 @@ from interface import *
 from calculs import rgb_convert, propagation, reset_value
 from numpy import where
 from copy import deepcopy
-
+from sys import setrecursionlimit
 
 def detection_victoire(plat, slot):
 
@@ -130,7 +130,7 @@ def clic_gauche(event):
 
     tags = partie1.gettags('current')
 
-    if len(tags) == 3 and Game_status == True:
+    if len(tags) == 3 and Game_status is True:
 
         tag = tags[0].split(",")
         slot = (int(tag[0]), int(tag[1]))
@@ -175,6 +175,9 @@ def Reset():
     plat, ordre, tour = Reset_Value(zeros((size, size), dtype=int), [])
     Game_status = True
 """
+
+setrecursionlimit(1500)
+
 
 # des1.config(command = Reset)
 
