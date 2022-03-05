@@ -129,8 +129,10 @@ des1.grid(row=0, column=1, padx=10, pady=10)
 des2 = tk.Button(frame, text='Distance Rouge', command=show_distance)
 des2.grid(row=0, column=2, padx=10, pady=10)
 
-partie4 = tk.Frame(frame, width=(width * (0.618 ** 3)), height=(width * (0.618 ** 6)), bg='pink')
+partie4 = tk.Canvas(frame, width=(width * (0.618 ** 3)), height=(width * (0.618 ** 6)), bg='pink')
 partie4.grid(row=0, column=4)
+
+partie4.create_text(30, 30, fill='black', text='HexGame')
 
 partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 - scale + scale * 0.25,
                    (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - 1.25 * scale,
