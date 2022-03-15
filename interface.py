@@ -2,7 +2,10 @@ import tkinter as tk
 import tkinter.font as tkf
 from string import ascii_letters
 from calculs import rgb_convert, propagation, reset_value
-from numpy import zeros
+import numpy as np
+import time
+from timeit import default_timer
+
 
 
 def plein_ecran(event):
@@ -34,30 +37,24 @@ def affichage_plateau(plat, size, scale):
                 partie1.create_text(x, y + 1.5 * scale, font=Police, fill='black', text=i + 1)
 
 
-def clear_plateau():
+def refresh_plateau(plat):
+
     if len(ordre) != 0:
         partie1.itemconfig(str(ordre[len(ordre) - 1][0]) + "," + str(ordre[len(ordre) - 1][1]), dash="",
                            outline='black', width=3)
 
     for i in range(len(plat)):
         for j in range(len(plat)):
-            # if plat[i][j] != 0 :
             tag = str(i) + ',' + str(j)
-            partie1.itemconfig(tag, fill=rgb_convert((160, 160, 160)), activefill=rgb_convert((180, 180, 180)))
-
-
-def load_plateau(plat):
-    for i in range(len(plat)):
-        for j in range(len(plat)):
 
             if plat[i][j] == 0:
-                pass
+                partie1.itemconfig(tag, fill=rgb_convert((160, 160, 160)), activefill=rgb_convert((180, 180, 180)))
 
             elif plat[i][j] == 1:
-                partie1.itemconfig(str(i) + "," + str(j), fill="red")
+                partie1.itemconfig(tag, fill="red", activefill = '')
 
             elif plat[i][j] == 2:
-                partie1.itemconfig(str(i) + "," + str(j), fill="blue")
+                partie1.itemconfig(tag, fill="blue", activefill = '')
 
 
 def show_distance(team, search):
@@ -73,7 +70,7 @@ def show_distance(team, search):
                     partie1.itemconfig(tag, fill=rgb_convert((0, 0, 255 - int((search[i][j] - 10) * r))))
 
 
-width = 900
+width = 1000
 size = 5
 player1, player2 = False, False  # Si Tru
 
@@ -88,6 +85,8 @@ tour = 0
 ordre = []
 
 plat = zeros((size, size), dtype=int)  # Crée une matrice carré de taille size remplie de 0
+
+tempsT = [default_timer(), 0, 0, 0, 0]
 
 fe = tk.Tk()
 
@@ -134,31 +133,58 @@ partie4.grid(row=0, column=4)
 
 partie4.create_text(30, 30, fill='black', text='HexGame')
 
-partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 - scale + scale * 0.25,
+
+
+tplayer1 = partie1.create_text(75, 30, text='player 1')
+player1tk = partie1.create_rectangle(50, 50, 100, 70, fill='red')
+
+tplayer2 = partie1.create_text(875, 30, text='player 2')
+player2tk = partie1.create_rectangle(850, 50, 900, 70, fill='white')
+
+str_time = tk.StringVar()  # Variable de temps
+chron = tk.Label(frame, textvariable=str_time)
+chron.place(x=100, y=500)
+
+str_time1 = tk.StringVar()  # Variable de temps
+chron1 = tk.Label(frame, textvariable=str_time1)
+chron1.place(x=50, y=90)
+
+str_time2 = tk.StringVar()  # Variable de temps
+chron2 = tk.Label(frame, textvariable=str_time2)
+chron2.place(x=850, y=90)
+
+str_time.set("%02d:%02d:%02d" % (0, 0, 0))
+str_time1.set("%02d:%02d:%02d" % (10, 0, 0))
+str_time2.set("%02d:%02d:%02d" % (10, 0, 0))
+
+Police = tkf.Font(weight="bold", size=-int(scale / 2))
+
+def background():
+    partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 - scale + scale * 0.25,
                    (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - 1.25 * scale,
                    (width - (scale * ((size - 1) * 3 + 2))) / 2 + 1.75 * scale,
                    (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) + 1.25 * scale,
                    start=0, extent=180, fill="red", outline="black", width=3)
 
-partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 - scale + scale * 0.25,
+    partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 - scale + scale * 0.25,
                    (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - 1.25 * scale,
                    (width - (scale * ((size - 1) * 3 + 2))) / 2 + 1.75 * scale,
                    (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) + 1.25 * scale,
                    start=180, extent=180, fill="blue", outline="black", width=3)
 
-partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.75),
+    partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.75),
                    (height - (scale * size * 2 * 0.866)) / 2 - (0.866 * scale) + scale * (0.866 - 0.75),
                    (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 - 0.75),
                    (height - (scale * size * 2 * 0.866)) / 2 - (0.866 * scale) + scale * (0.866 + 0.75),
                    start=90, extent=180, fill="red", outline="black", width=3)
 
-partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.75),
+    partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.75),
                    (height - (scale * size * 2 * 0.866)) / 2 - (0.866 * scale) + scale * (0.866 - 0.75),
                    (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 - 0.75),
                    (height - (scale * size * 2 * 0.866)) / 2 - (0.866 * scale) + scale * (0.866 + 0.75),
                    start=270, extent=180, fill="blue", outline="black", width=3)
 
-partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.75),
+    partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.75),
                    (height - (scale * size * 2 * 0.866)) / 2 + (2 * size * 0.866 * scale) - (0.866 * scale) + scale * (
                                0.866 - 0.75),
                    (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 - 0.75),
@@ -166,7 +192,7 @@ partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale 
                                0.866 + 0.75),
                    start=270, extent=180, fill="red", outline="black", width=3)
 
-partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.75),
+    partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.75),
                    (height - (scale * size * 2 * 0.866)) / 2 + (2 * size * 0.866 * scale) - (0.866 * scale) + scale * (
                                0.866 - 0.75),
                    (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 - 0.75),
@@ -174,21 +200,21 @@ partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale 
                                0.866 + 0.75),
                    start=90, extent=180, fill="blue", outline="black", width=3)
 
-partie1.create_arc(
+    partie1.create_arc(
     (width - (scale * ((size - 1) * 3 + 2))) / 2 - 1.25 * scale - scale * 0.5 + scale * ((size - 1) * 3 + 2),
     (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - 1.25 * scale,
     (width - (scale * ((size - 1) * 3 + 2))) / 2 - 0.5 * scale + 1.25 * scale + scale * ((size - 1) * 3 + 2),
     (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) + 1.25 * scale,
     start=0, extent=180, fill="blue", outline="black", width=3)
 
-partie1.create_arc(
+    partie1.create_arc(
     (width - (scale * ((size - 1) * 3 + 2))) / 2 - 1.25 * scale - scale * 0.5 + scale * ((size - 1) * 3 + 2),
     (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - 1.25 * scale,
     (width - (scale * ((size - 1) * 3 + 2))) / 2 - 0.5 * scale + 1.25 * scale + scale * ((size - 1) * 3 + 2),
     (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) + 1.25 * scale,
     start=180, extent=180, fill="red", outline="black", width=3)
 
-partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + 0.5 * scale - scale * 0.625,
+    partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + 0.5 * scale - scale * 0.625,
                        (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - (1.948 - 0.866) * scale,
                        (width - (scale * ((size - 1) * 3 + 2))) / 2 + 2 * scale,
                        (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - (1.948 - 0.866) * scale,
@@ -198,7 +224,7 @@ partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + 0.5 * scal
                        (height - (scale * size * 2 * 0.866)) / 2 - (0.866 * scale) + scale * 0.866 - scale * 0.6494,
                        fill="red", outline="black", width=3)
 
-partie1.create_polygon(
+    partie1.create_polygon(
     (width - (scale * ((size - 1) * 3 + 2))) / 2 + scale * ((size - 1) * 3 + 2) - 0.5 * scale + scale * 0.625,
     (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - (1.948 - 0.866) * scale,
     (width - (scale * ((size - 1) * 3 + 2))) / 2 + scale * ((size - 1) * 3 + 2) - 2 * scale,
@@ -209,7 +235,7 @@ partie1.create_polygon(
     (height - (scale * size * 2 * 0.866)) / 2 - (0.866 * scale) + scale * 0.866 - scale * 0.6494,
     fill="blue", outline="black", width=3)
 
-partie1.create_polygon(
+    partie1.create_polygon(
     (width - (scale * ((size - 1) * 3 + 2))) / 2 + scale * ((size - 1) * 3 + 2) - 0.5 * scale + 0.625 * scale,
     (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - 0.866 * scale + 1.948 * scale,
     (width - (scale * ((size - 1) * 3 + 2))) / 2 + scale * ((size - 1) * 3 + 2) - 2 * scale,
@@ -220,7 +246,7 @@ partie1.create_polygon(
     (height - (scale * size * 2 * 0.866)) / 2 - (0.866 * scale) + (2 * 0.866 * scale * size) + scale * (0.6494 + 0.866),
     fill="red", outline="black", width=3)
 
-partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + 0.5 * scale - scale * 0.625,
+    partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + 0.5 * scale - scale * 0.625,
                        (height - (scale * size * 2 * 0.866)) / 2 + (
                                    0.866 * scale * size) - scale * 0.866 + 1.948 * scale,
                        (width - (scale * ((size - 1) * 3 + 2))) / 2 + 2 * scale,
@@ -233,7 +259,7 @@ partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + 0.5 * scal
                                    2 * 0.866 * scale * size) + scale * (0.6494 + 0.866),
                        fill="blue", outline="black", width=3)
 
-partie1.create_polygon(
+    partie1.create_polygon(
     (width - (scale * ((size - 1) * 3 + 2))) / 2 + scale * ((size - 1) * 3 + 2) - 0.5 * scale + 0.625 * scale - 4,
     (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - 0.866 * scale + 1.948 * scale - 2,
     (width - (scale * ((size - 1) * 3 + 2))) / 2 + scale * ((size - 1) * 3 + 2) - 2 * scale,
@@ -242,7 +268,7 @@ partie1.create_polygon(
     (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size),
     fill='red', outline='red', width=6)
 
-partie1.create_polygon(
+    partie1.create_polygon(
     (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.3746) - 30,
     (height - (scale * size * 2 * 0.866)) / 2 - (0.866 * scale) + (2 * 0.866 * scale * size),
     (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * 0.3746,
@@ -252,7 +278,7 @@ partie1.create_polygon(
                 0.6494 + 0.866) - 3,
     fill='blue', outline='blue', width=6)
 
-partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) + scale * (-0.5),
+    partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) + scale * (-0.5),
                        (height - (scale * size * 2 * 0.866)) / 2 - (0.866 * scale) + (2 * 0.866 * scale * size),
                        (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) + scale * (
                                    -0.5 + 0.3746) + 20,
@@ -262,16 +288,16 @@ partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * sc
                                    2 * 0.866 * scale * size) + scale * (0.6494 + 0.866) - 4,
                        fill='red', outline='red', width=6)
 
-partie1.create_polygon(
-    (width - (scale * ((size - 1) * 3 + 2))) / 2 + scale * ((size - 1) * 3 + 2) - 0.5 * scale + 0.625 * scale - 4,
-    (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - (1.948 - 0.866) * scale + 2,
-    (width - (scale * ((size - 1) * 3 + 2))) / 2 + scale * ((size - 1) * 3 + 2) - 2 * scale,
-    (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - (1.948 - 0.866) * scale - 10,
-    (width - (scale * ((size - 1) * 3 + 2))) / 2 + scale * ((size - 1) * 3 + 2) - scale,
-    (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size),
-    fill='blue', outline='blue', width=6)
+    partie1.create_polygon(
+        (width - (scale * ((size - 1) * 3 + 2))) / 2 + scale * ((size - 1) * 3 + 2) - 0.5 * scale + 0.625 * scale - 4,
+        (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - (1.948 - 0.866) * scale + 2,
+        (width - (scale * ((size - 1) * 3 + 2))) / 2 + scale * ((size - 1) * 3 + 2) - 2 * scale,
+        (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - (1.948 - 0.866) * scale - 10,
+        (width - (scale * ((size - 1) * 3 + 2))) / 2 + scale * ((size - 1) * 3 + 2) - scale,
+        (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size),
+        fill='blue', outline='blue', width=6)
 
-partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + 0.5 * scale - scale * 0.625 + 4,
+    partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + 0.5 * scale - scale * 0.625 + 4,
                        (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - (1.948 - 0.866) * scale + 2,
                        (width - (scale * ((size - 1) * 3 + 2))) / 2 + 0.5 * scale + 1.5 * scale,
                        (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - (
@@ -280,7 +306,7 @@ partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + 0.5 * scal
                        (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size),
                        fill='red', outline='red', width=6)
 
-partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + 0.5 * scale - scale * 0.625 + 4,
+    partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + 0.5 * scale - scale * 0.625 + 4,
                        (height - (scale * size * 2 * 0.866)) / 2 + (
                                    0.866 * scale * size) - 0.866 * scale + 1.948 * scale - 2,
                        (width - (scale * ((size - 1) * 3 + 2))) / 2 + 0.5 * scale + 1.5 * scale,
@@ -290,16 +316,16 @@ partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + 0.5 * scal
                        (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size),
                        fill='blue', outline='blue', width=6)
 
-partie1.create_polygon(
-    (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.3746) - 10,
-    (height - (scale * size * 2 * 0.866)) / 2 + scale,
-    (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * 0.3746,
-    (height - (scale * size * 2 * 0.866)) / 2 + scale,
-    (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.3746) + 1,
-    (height - (scale * size * 2 * 0.866)) / 2 - scale * 0.6494 + 4,
-    fill='red', outline='red', width=6)
+    partie1.create_polygon(
+        (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.3746) - 10,
+        (height - (scale * size * 2 * 0.866)) / 2 + scale,
+        (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * 0.3746,
+        (height - (scale * size * 2 * 0.866)) / 2 + scale,
+        (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) - scale * (0.5 + 0.3746) + 1,
+        (height - (scale * size * 2 * 0.866)) / 2 - scale * 0.6494 + 4,
+        fill='red', outline='red', width=6)
 
-partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) + scale * (-0.5),
+    partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) + scale * (-0.5),
                        (height - (scale * size * 2 * 0.866)) / 2 + scale,
                        (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) + scale * (
                                    -0.5 + 0.3746) + 20, (height - (scale * size * 2 * 0.866)) / 2 + scale,
@@ -307,4 +333,4 @@ partie1.create_polygon((width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * sc
                        (height - (scale * size * 2 * 0.866)) / 2 - scale * 0.6494 + 4,
                        fill='blue', outline='blue', width=6)
 
-Police = tkf.Font(weight="bold", size=-int(scale / 2))
+background()
