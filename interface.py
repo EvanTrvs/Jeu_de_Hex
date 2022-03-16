@@ -22,9 +22,9 @@ def affichage_plateau(partie1, plat, size, scale, width, height):
                                        fill=rgb_convert((160, 160, 160)), activefill=rgb_convert((180, 180, 180)),
                                        outline='black', width=3, tags=(str(i) + "," + str(j), "cellule"))
             if i == 0:
-                partie1.create_text(x, y + 0.2 * scale, font=police, fill='black', text=ascii_letters[j])
+                partie1.create_text(x, y + 0.2 * scale, font=police, fill='blue', text=ascii_letters[j])
             if j == 0:
-                partie1.create_text(x, y + 1.5 * scale, font=police, fill='black', text=i + 1)
+                partie1.create_text(x, y + 1.5 * scale, font=police, fill='red', text=i + 1)
 
 
 def refresh_plateau(partie1, plat, ordre):
@@ -86,7 +86,7 @@ def fenetre_jeu(fe, width, height):
     xu = round(width + (width * (0.618 ** 3)))
     yu = round(height + (width * (0.618 ** 6)))
 
-    fe.geometry(str(xu) + 'x' + str(yu) + '+' + str(10) + '+' + str(100))
+    fe.geometry(str(xu) + 'x' + str(yu) + '+' + str(10) + '+' + str(20))
 
     frame = tk.Frame(fe, width=xu, height=yu, bg=rgb_convert((100, 80, 70)))
     frame.place(relx=0.5, rely=0.5, anchor="center")
@@ -99,10 +99,10 @@ def fenetre_jeu(fe, width, height):
 
     partie4.create_text(60, 30, fill='black', text='HexGame.logo')
 
-    partie1.create_text(75, 30, text='player 1')
+    partie1.create_text(75, 30, text='Player 1')
     partie1.create_rectangle(50, 50, 100, 70, fill='red', tag="player1tk")
 
-    partie1.create_text(875, 30, text='player 2')
+    partie1.create_text(875, 30, text='Player 2')
     partie1.create_rectangle(850, 50, 900, 70, fill='white', tag="player2tk")
 
     str_time = tk.StringVar()  # Variable de temps

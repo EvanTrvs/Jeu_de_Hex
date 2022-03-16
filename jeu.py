@@ -7,8 +7,6 @@ from copy import deepcopy
 from sys import setrecursionlimit
 from random import choice
 
-conn = sqlite3.connect('Jeu_HEX')
-cur = conn.cursor()
 
 
 class HEX:
@@ -82,7 +80,8 @@ class HEX:
                 self.test_victoire(slot)
 
     def button_config(self, save1, save2, save3, restart, pause, tomenu):
-        restart.config(command = self.reset)
+        restart.config(command=self.reset)
+        tomenu.config(command=self.fe.destroy)
 
     def plein_ecran(self, event):
         if self.fe.attributes()[7] == 0:

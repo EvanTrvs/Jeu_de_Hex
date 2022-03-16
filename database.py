@@ -1,3 +1,9 @@
+import sqlite3
+
+
+conn = sqlite3.connect('Jeu_HEX')
+cur = conn.cursor()
+
 def chargement(numero):
     Reset()
 
