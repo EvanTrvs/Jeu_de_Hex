@@ -1,22 +1,15 @@
 import tkinter as tk
 import tkinter.font as tkf
 from string import ascii_letters
-from calculs import rgb_convert, propagation, reset_value
+from calculs import *
 import numpy as np
 import time
 from timeit import default_timer
 
 
+def affichage_plateau(partie1, plat, size, scale, width, height):
+    police = tkf.Font(weight="bold", size=-int(scale / 2))
 
-def plein_ecran(event):
-    if fe.attributes()[7] == 0:
-        fe.attributes('-fullscreen', True)
-
-    else:
-        fe.attributes('-fullscreen', False)
-
-
-def affichage_plateau(plat, size, scale):
     for i in range(size):
         for j in range(size):
             x = (width - (scale * ((size - 1) * 3 + 2))) / 2 + (j * scale * 1.5) + (i * scale * 1.5)
@@ -25,43 +18,59 @@ def affichage_plateau(plat, size, scale):
 
             if plat[i][j] == 0:
                 partie1.create_polygon(x + (0.5 * scale), y, x + (1.5 * scale), y, x + (2 * scale), y + (scale * 0.866),
-                                       x + (scale * 1.5), y + (scale * 2 * 0.866),
-                                       x + (scale * 0.5), y + (scale * 2 * 0.866), x, y + (scale * 0.866),
+                                       x + (scale * 1.5), y + (scale * 2 * 0.866), x + (scale * 0.5), y + (scale * 2 * 0.866), x, y + (scale * 0.866),
                                        fill=rgb_convert((160, 160, 160)), activefill=rgb_convert((180, 180, 180)),
                                        outline='black', width=3, tags=(str(i) + "," + str(j), "cellule"))
-
             if i == 0:
-                partie1.create_text(x, y + 0.2 * scale, font=Police, fill='black', text=ascii_letters[j])
-
+                partie1.create_text(x, y + 0.2 * scale, font=police, fill='black', text=ascii_letters[j])
             if j == 0:
-                partie1.create_text(x, y + 1.5 * scale, font=Police, fill='black', text=i + 1)
+                partie1.create_text(x, y + 1.5 * scale, font=police, fill='black', text=i + 1)
 
 
-def refresh_plateau(plat):
+def refresh_plateau(partie1, plat, ordre):
 
-    if len(ordre) != 0:
-        partie1.itemconfig(str(ordre[len(ordre) - 1][0]) + "," + str(ordre[len(ordre) - 1][1]), dash="",
-                           outline='black', width=3)
+    if len(ordre) % 2 == 0:
+        partie1.itemconfig("player1tk", fill='red')
+        partie1.itemconfig("player2tk", fill='')
+    else:
+        partie1.itemconfig("player1tk", fill='')
+        partie1.itemconfig("player2tk", fill='blue')
 
     for i in range(len(plat)):
         for j in range(len(plat)):
             tag = str(i) + ',' + str(j)
 
             if plat[i][j] == 0:
-                partie1.itemconfig(tag, fill=rgb_convert((160, 160, 160)), activefill=rgb_convert((180, 180, 180)))
-
+                partie1.itemconfig(tag, fill=rgb_convert((160, 160, 160)), activefill=rgb_convert((180, 180, 180)), dash="", outline='black', width=3)
             elif plat[i][j] == 1:
-                partie1.itemconfig(tag, fill="red", activefill = '')
-
+                partie1.itemconfig(tag, fill="red", activefill='', dash="", outline='black', width=3)
             elif plat[i][j] == 2:
-                partie1.itemconfig(tag, fill="blue", activefill = '')
+                partie1.itemconfig(tag, fill="blue", activefill='', dash="", outline='black', width=3)
+
+
+def fin_partie(team, search, ordre):
+
+    if len(ordre) != 0:
+        partie1.itemconfig(str(ordre[len(ordre) - 1][0]) + "," + str(ordre[len(ordre) - 1][1]), dash="", outline='black', width=3)
+
+    partie1.itemconfig("cellule", activefill='')
+    chemin = []
+
+    if team == 1:
+        depart = min(filter(lambda i: i > 10, search[0]))
+        debut = list(where((search[0] == depart))[0])
+
+        for i in debut:
+            chemin.append((0, i))
 
 
 def show_distance(team, search):
     print(search)
     r = 220 / (max(search) - 10)
+
     for i in range(len(plat)):
         for j in range(len(plat)):
+
             if search[i][j] >= 10:
                 tag = str(i) + ',' + str(j)
                 if team == 1:
@@ -70,96 +79,105 @@ def show_distance(team, search):
                     partie1.itemconfig(tag, fill=rgb_convert((0, 0, 255 - int((search[i][j] - 10) * r))))
 
 
-width = 1000
-size = 5
-player1, player2 = False, False  # Si Tru
+def fenetre_jeu(fe, width, height):
 
-begin = False  # soit blanc commence, soit noir, soit random
-timed = False  # active ou non le minuteur pour les joueurs
-Game_status = True
+    fe.title('HexGame')
+    fe.config(bg=rgb_convert((50, 50, 50)))
+    xu = round(width + (width * (0.618 ** 3)))
+    yu = round(height + (width * (0.618 ** 6)))
 
-height = round(width * 0.618)
-scale = (width - 250) / ((size - 1) * 3 + 2)
+    fe.geometry(str(xu) + 'x' + str(yu) + '+' + str(10) + '+' + str(100))
 
-tour = 0
-ordre = []
+    frame = tk.Frame(fe, width=xu, height=yu, bg=rgb_convert((100, 80, 70)))
+    frame.place(relx=0.5, rely=0.5, anchor="center")
 
-plat = zeros((size, size), dtype=int)  # Crée une matrice carré de taille size remplie de 0
+    partie1 = tk.Canvas(frame, width=width, height=height, bg=rgb_convert((200, 160, 150)), highlightbackground='red', highlightthickness=0)
+    partie1.grid(row=1, column=0, rowspan=5, columnspan=4)
 
-tempsT = [default_timer(), 0, 0, 0, 0]
+    partie4 = tk.Canvas(frame, width=(width * (0.618 ** 3)), height=(width * (0.618 ** 6)), bg='pink')
+    partie4.grid(row=0, column=5)
 
-fe = tk.Tk()
+    partie4.create_text(60, 30, fill='black', text='HexGame.logo')
 
-fe.title('HexGame')
-fe.config(bg=rgb_convert((50, 50, 50)))
-xu = width + (width * (0.618 ** 3))
-yu = height + (width * (0.618 ** 5))
+    partie1.create_text(75, 30, text='player 1')
+    partie1.create_rectangle(50, 50, 100, 70, fill='red', tag="player1tk")
 
-window = str(round(width + (width * (0.618 ** 3)))) + 'x' + str(round(height + (width * (0.618 ** 6)))) + '+' + str(
-    10) + '+' + str(100)
+    partie1.create_text(875, 30, text='player 2')
+    partie1.create_rectangle(850, 50, 900, 70, fill='white', tag="player2tk")
 
-fe.geometry(window)
+    str_time = tk.StringVar()  # Variable de temps
+    chron = tk.Label(frame, textvariable=str_time)
+    chron.place(x=100, y=500)
 
-frame = tk.Frame(fe, width=round(width + (width * (0.618 ** 3))), height=round(height + (width * (0.618 ** 6))),
-                 bg='blue')
-frame.place(relx=0.5, rely=0.5, anchor="center")
+    str_time.set("%02d:%02d:%02d" % (0, 0, 0))
 
-frame.configure(bg=rgb_convert((100, 80, 70)))
+    return frame, partie1
 
-partie1 = tk.Canvas(frame, width=width, height=height, bg=rgb_convert((200, 160, 150)),
-                    highlightbackground='red', highlightthickness=0)
-partie1.grid(row=1, column=0, rowspan=3, columnspan=3)
+def button_create(frame):
 
-enregi1 = tk.Button(frame, text="Enregistrement 1", command=fe.destroy, borderwidth=5, relief='groove', bg='pink')
-enregi1.grid(row=1, column=4, padx=10, pady=10)
+    """
+    save1 = tk.Button(frame, text="Enregistrement 1")
+    save1.grid(row=0, column=1, padx=10, pady=10)
 
-enregi2 = tk.Button(frame, text="Enregistrement 2", command=fe.destroy, borderwidth=5, relief='ridge', bg='blue')
-enregi2.grid(row=2, column=4, padx=10, pady=10)
+    save2 = tk.Button(frame, text="Enregistrement 2")
+    save2.grid(row=0, column=2, padx=10, pady=10)
 
-enregi3 = tk.Button(frame, text="Enregistrement 3", command=fe.destroy)
-enregi3.grid(row=3, column=4, padx=10, pady=10)
+    save3 = tk.Button(frame, text="Enregistrement 3")
+    save3.grid(row=0, column=3, padx=10, pady=10)
+    """
 
-des = tk.Button(frame, text='Menu principal', command=fe.destroy)
-des.grid(row=0, column=0, padx=10, pady=10)
+    restart = tk.Button(frame, text='Restart')
+    restart.grid(row=5, column=5, padx=10, pady=10)
 
-des1 = tk.Button(frame, text='Reset')
-des1.grid(row=0, column=1, padx=10, pady=10)
+    pause = tk.Button(frame, text='Pause')
+    pause.grid(row=4, column=5, padx=10, pady=10)
 
-des2 = tk.Button(frame, text='Distance Rouge', command=show_distance)
-des2.grid(row=0, column=2, padx=10, pady=10)
+    tomenu = tk.Button(frame, text='Menu Principal')
+    tomenu.grid(row=0, column=0, padx=10, pady=10)
 
-partie4 = tk.Canvas(frame, width=(width * (0.618 ** 3)), height=(width * (0.618 ** 6)), bg='pink')
-partie4.grid(row=0, column=4)
+    A = tk.Menubutton(frame, text="Menu A")
+    B = tk.Menubutton(frame, text="Menu B")
+    C = tk.Menubutton(frame, text="Menu C")
 
-partie4.create_text(30, 30, fill='black', text='HexGame')
+    OA = tk.Menu(A)
+    OA.add_command(label="Enreg1")
+    OA.add_command(label="Charg1")
+    OA.entryconfig('Charg1', state='disabled')
+
+    OB = tk.Menu(B)
+    OB.add_command(label="Enreg2")
+    OB.add_command(label="Charg2")
+    OB.entryconfig('Charg2', state='disabled')
+
+    OC = tk.Menu(C)
+    OC.add_command(label="Enreg3")
+    OC.add_command(label="Charg3")
+    OC.entryconfig('Charg3', state='disabled')
+
+    A["menu"] = OA
+    B["menu"] = OB
+    C["menu"] = OC
+
+    A.grid(row=0, column=1, padx=10, pady=10)
+    B.grid(row=0, column=2, padx=10, pady=10)
+    C.grid(row=0, column=3, padx=10, pady=10)
+
+    return A, B, C, restart, pause, tomenu
+
+def minuteur():
+    str_time1 = tk.StringVar()  # Variable de temps
+    chron1 = tk.Label(frame, textvariable=str_time1)
+    chron1.place(x=50, y=90)
+
+    str_time2 = tk.StringVar()  # Variable de temps
+    chron2 = tk.Label(frame, textvariable=str_time2)
+    chron2.place(x=850, y=90)
+
+    str_time1.set("%02d:%02d:%02d" % (10, 0, 0))
+    str_time2.set("%02d:%02d:%02d" % (10, 0, 0))
 
 
-
-tplayer1 = partie1.create_text(75, 30, text='player 1')
-player1tk = partie1.create_rectangle(50, 50, 100, 70, fill='red')
-
-tplayer2 = partie1.create_text(875, 30, text='player 2')
-player2tk = partie1.create_rectangle(850, 50, 900, 70, fill='white')
-
-str_time = tk.StringVar()  # Variable de temps
-chron = tk.Label(frame, textvariable=str_time)
-chron.place(x=100, y=500)
-
-str_time1 = tk.StringVar()  # Variable de temps
-chron1 = tk.Label(frame, textvariable=str_time1)
-chron1.place(x=50, y=90)
-
-str_time2 = tk.StringVar()  # Variable de temps
-chron2 = tk.Label(frame, textvariable=str_time2)
-chron2.place(x=850, y=90)
-
-str_time.set("%02d:%02d:%02d" % (0, 0, 0))
-str_time1.set("%02d:%02d:%02d" % (10, 0, 0))
-str_time2.set("%02d:%02d:%02d" % (10, 0, 0))
-
-Police = tkf.Font(weight="bold", size=-int(scale / 2))
-
-def background():
+def background(partie1, scale, width, height, size):
     partie1.create_arc((width - (scale * ((size - 1) * 3 + 2))) / 2 - scale + scale * 0.25,
                    (height - (scale * size * 2 * 0.866)) / 2 + (0.866 * scale * size) - 1.25 * scale,
                    (width - (scale * ((size - 1) * 3 + 2))) / 2 + 1.75 * scale,
@@ -332,5 +350,3 @@ def background():
                        (width - (scale * ((size - 1) * 3 + 2))) / 2 + (size * scale * 1.5) + scale * (-0.5 + 0.3746),
                        (height - (scale * size * 2 * 0.866)) / 2 - scale * 0.6494 + 4,
                        fill='blue', outline='blue', width=6)
-
-background()

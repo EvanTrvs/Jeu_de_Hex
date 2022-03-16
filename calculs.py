@@ -1,13 +1,8 @@
+from copy import deepcopy
+
+
 def rgb_convert(rgb):
     return "#%02x%02x%02x" % rgb
-
-
-def reset_value(new_plat, new_ordre):
-    tour = len(new_ordre)
-    ordre = new_ordre
-    plat = new_plat
-
-    return plat, ordre, tour
 
 
 def propagation(slot, search, team, distance):
@@ -17,170 +12,67 @@ def propagation(slot, search, team, distance):
     if slot[0] + 1 <= len(search) - 1:
         if search[slot[0] + 1][slot[1]] == team or search[slot[0] + 1][slot[1]] > distance:
             propagation((slot[0] + 1, slot[1]), search, team, distance)
-
     if slot[0] + 1 <= len(search) - 1 and slot[1] - 1 >= 0:
         if search[slot[0] + 1][slot[1] - 1] == team or search[slot[0] + 1][slot[1] - 1] > distance:
             propagation((slot[0] + 1, slot[1] - 1), search, team, distance)
-
     if slot[1] - 1 >= 0:
         if search[slot[0]][slot[1] - 1] == team or search[slot[0]][slot[1] - 1] > distance:
             propagation((slot[0], slot[1] - 1), search, team, distance)
-
     if slot[1] + 1 <= len(search) - 1:
         if search[slot[0]][slot[1] + 1] == team or search[slot[0]][slot[1] + 1] > distance:
             propagation((slot[0], slot[1] + 1), search, team, distance)
-
     if slot[0] - 1 >= 0 and slot[1] + 1 <= len(search) - 1:
         if search[slot[0] - 1][slot[1] + 1] == team or search[slot[0] - 1][slot[1] + 1] > distance:
             propagation((slot[0] - 1, slot[1] + 1), search, team, distance)
-
     if slot[0] - 1 >= 0:
         if search[slot[0] - 1][slot[1]] == team or search[slot[0] - 1][slot[1]] > distance:
             propagation((slot[0] - 1, slot[1]), search, team, distance)
 
 
-def pre_pascal(mat, team, side):
-    mats = deepcopy(mat)
+def detection_victoire(plat, slot):
+    size = len(plat)
+    team = plat[slot[0]][slot[1]]  # team = 1, le joueur blanc viens de jouer, team = 2 le joueur noir viens de jouer
 
-    if side == 'd':
+    start = []  # liste des coordonnées de départ
 
-        for i in range(len(mat)):
-            if mat[i][0] == 0:
-                mats[i][0] = 1
-
-            elif mat[i][0] == team:
-                mats[i][0] = 2
-
-            else:
-                mats[i][0] = 0
-
+    if team == 1:
+        for i in range(size):  # verrou de pion jouer sur un bord
+            if plat[0][i] == team:
+                start.append((0, i))
     else:
+        for i in range(size):  # verrou de pion jouer sur un bord
+            if plat[i][0] == team:
+                start.append((i, 0))
 
-        for i in range(len(mat)):
-            if mat[i][len(mat) - 1] == 0:
-                mats[i][len(mat) - 1] = 1
+    if len(start) == 0:
+        pass
+    else:
+        end = []  # liste des coordonnées d'arrivée
+        # print("verrou 1 ok")
 
-            elif mat[i][len(mat) - 1] == team:
-                mats[i][len(mat) - 1] = 2
-
-            else:
-                mats[i][len(mat) - 1] = 0
-
-    return mats
-
-
-def meilleur_coup(res, mat):
-    flat = res.flatten()
-    flat.sort()
-
-    coup = np.where(mat != 0)
-
-    libre = []
-    occupe = []
-    dic = {}
-
-    for i in range(len(coup[0])):
-        occupe.append((coup[0][i], coup[1][i]))
-
-    n = 0
-
-    while len(libre) == 0:
-
-        n += 1
-        li = np.where(res == flat[-n])
-        libre = []
-
-        for i in range(len(li[0])):
-            libre.append((li[0][i], li[1][i]))
-
-        for i in occupe:
-            if i in libre:
-                libre.remove(i)
-
-        if len(occupe) == 0 and (int(len(mat) / 2), int(len(mat) / 2)) in libre:
-            libre.remove((int(len(mat) / 2), int(len(mat) / 2)))
-
-    for i in libre:
-
-        sum_voisin = 0
-
-        if i[0] + 1 <= len(res) - 1:
-            sum_voisin += res[i[0] + 1][i[1]]
-
-        if i[0] + 1 <= len(plat) - 1 and i[1] - 1 >= 0:
-            sum_voisin += res[i[0] + 1][i[1] - 1]
-
-        if i[1] - 1 >= 0:
-            sum_voisin += res[i[0]][i[1] - 1]
-
-        if i[1] + 1 <= len(plat) - 1:
-            sum_voisin += res[i[0]][i[1] + 1]
-
-        if i[0] - 1 >= 0 and i[1] + 1 <= len(plat) - 1:
-            sum_voisin += res[i[0] - 1][i[1] + 1]
-
-        if i[0] - 1 >= 0:
-            sum_voisin += res[i[0] - 1][i[1]]
-
-        # doit etre un ratio entre la plus grosse valeur et ses voisins
-
-        if sum_voisin not in dic:
-            dic[sum_voisin] = [i]
+        if team == 1:
+            for i in range(size):  # verrou de pion jouer sur l'autre bord
+                if plat[size - 1][i] == team:
+                    end.append((size - 1, i))
         else:
-            dic[sum_voisin].append(i)
+            for i in range(size):  # verrou de pion jouer sur l'autre bord
+                if plat[i][size - 1] == team:
+                    end.append((i, size - 1))
 
-    return choice(dic[max(dic.keys())])
-
-
-def pascald(mat, slot, team):
-    matx = deepcopy(mat)
-
-    for i in range(1, len(matx) - (slot[1])):
-        for j in range(slot[0] + 1):
-
-            if matx[slot[0] - j][slot[1] + i] != team and matx[slot[0] - j][slot[1] + i] != 0:
-                matx[slot[0] - j][slot[1] + i] = 0
-
-            elif slot[0] - j + 1 < len(matx):
-                if matx[slot[0] - j][slot[1] + i] == 0:
-                    matx[slot[0] - j][slot[1] + i] = matx[slot[0] - j][slot[1] + i - 1] + matx[slot[0] - j + 1][
-                        slot[1] + i - 1]
-
-                elif matx[slot[0] - j][slot[1] + i] == team:
-                    matx[slot[0] - j][slot[1] + i] = 2 * (
-                                matx[slot[0] - j][slot[1] + i - 1] + matx[slot[0] - j + 1][slot[1] + i - 1])
+        if len(end) == 0:
+            pass
+        else:
+            # print("verrou 2 ok")
+            if plat[plat == team].size < size:  # verrou de minimum de pion joué pour une victoire
+                pass
             else:
-                if matx[slot[0] - j][slot[1] + i] == 0:
-                    matx[slot[0] - j][slot[1] + i] = matx[slot[0] - j][slot[1] + i - 1]
+                # print("verrou 3 ok")
+                search = deepcopy(plat)  # creation d'une matrice de travail copié d'un plateau
 
-                elif matx[slot[0] - j][slot[1] + i] == team:
-                    matx[slot[0] - j][slot[1] + i] = 2 * matx[slot[0] - j][slot[1] + i - 1]
+                propagation(slot, search, team, 9)  # fonction récursive de propagation sur le plateau de travail en fonction du dernier coup joué
+                print(search)
 
-    return matx
-
-
-def pascalg(mat, slot, team):
-    matx = deepcopy(mat)
-
-    for i in range(1, (slot[1]) + 1):
-        for j in range(len(matx) - slot[0]):
-
-            if matx[slot[0] + j][slot[1] - i] != team and matx[slot[0] + j][slot[1] - i] != 0:
-                matx[slot[0] + j][slot[1] - i] = 0
-
-            elif slot[0] + j - 1 >= 0:
-                if matx[slot[0] + j][slot[1] - i] == 0:
-                    matx[slot[0] + j][slot[1] - i] = matx[slot[0] + j][slot[1] - i + 1] + matx[slot[0] + j - 1][
-                        slot[1] - i + 1]
-
-                elif matx[slot[0] + j][slot[1] - i] == team:
-                    matx[slot[0] + j][slot[1] - i] = 2 * (
-                                matx[slot[0] + j][slot[1] - i + 1] + matx[slot[0] + j - 1][slot[1] - i + 1])
-            else:
-                if matx[slot[0] + j][slot[1] - i] == 0:
-                    matx[slot[0] + j][slot[1] - i] = matx[slot[0] + j][slot[1] - i + 1]
-
-                elif matx[slot[0] + j][slot[1] - i] == team:
-                    matx[slot[0] + j][slot[1] - i] = 2 * matx[slot[0] + j][slot[1] - i + 1]
-
-    return matx
+                if True in [search[k[0]][k[1]] >= 10 for k in start]:  # si un des pions de la team touche un des bord et est relier au dernier coup
+                    if True in [search[q[0]][q[1]] >= 10 for q in end]:  # si un des pions de la team touche l'autre bord et est relier au dernier coup
+                        return search
+    return False
