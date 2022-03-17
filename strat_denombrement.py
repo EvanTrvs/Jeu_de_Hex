@@ -1,3 +1,6 @@
+from random import choice
+
+
 def pre_pascal(mat, team, side):
     mats = deepcopy(mat)
 

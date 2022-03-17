@@ -1,10 +1,8 @@
+from calculs import *
 import tkinter as tk
 import tkinter.font as tkf
 from string import ascii_letters
-from calculs import *
 import numpy as np
-import time
-from timeit import default_timer
 
 
 def affichage_plateau(partie1, plat, size, scale, width, height):
@@ -22,9 +20,9 @@ def affichage_plateau(partie1, plat, size, scale, width, height):
                                        fill=rgb_convert((160, 160, 160)), activefill=rgb_convert((180, 180, 180)),
                                        outline='black', width=3, tags=(str(i) + "," + str(j), "cellule"))
             if i == 0:
-                partie1.create_text(x, y + 0.2 * scale, font=police, fill='blue', text=ascii_letters[j])
+                partie1.create_text(x, y + 0.2 * scale, font=police, fill='black', text=ascii_letters[j])
             if j == 0:
-                partie1.create_text(x, y + 1.5 * scale, font=police, fill='red', text=i + 1)
+                partie1.create_text(x, y + 1.5 * scale, font=police, fill='black', text=i + 1)
 
 
 def refresh_plateau(partie1, plat, ordre):
@@ -79,7 +77,7 @@ def show_distance(team, search):
                     partie1.itemconfig(tag, fill=rgb_convert((0, 0, 255 - int((search[i][j] - 10) * r))))
 
 
-def fenetre_jeu(fe, width, height):
+def fenetre_jeu(fe, width, height, timed):
 
     fe.title('HexGame')
     fe.config(bg=rgb_convert((50, 50, 50)))
@@ -103,28 +101,27 @@ def fenetre_jeu(fe, width, height):
     partie1.create_rectangle(50, 50, 100, 70, fill='red', tag="player1tk")
 
     partie1.create_text(875, 30, text='Player 2')
-    partie1.create_rectangle(850, 50, 900, 70, fill='white', tag="player2tk")
+    partie1.create_rectangle(850, 50, 900, 70, fill='', tag="player2tk")
 
-    str_time = tk.StringVar()  # Variable de temps
+    str_time = tk.StringVar()
     chron = tk.Label(frame, textvariable=str_time)
     chron.place(x=100, y=500)
 
-    str_time.set("%02d:%02d:%02d" % (0, 0, 0))
+    if timed is True:
+        str_time1 = tk.StringVar()  # Variable de temps
+        chron1 = tk.Label(frame, textvariable=str_time1)
+        chron1.place(x=50, y=90)
 
-    return frame, partie1
+        str_time2 = tk.StringVar()  # Variable de temps
+        chron2 = tk.Label(frame, textvariable=str_time2)
+        chron2.place(x=850, y=90)
+    else:
+        str_time1 = False
+        str_time2 = False
+
+    return frame, partie1, str_time, str_time1, str_time2
 
 def button_create(frame):
-
-    """
-    save1 = tk.Button(frame, text="Enregistrement 1")
-    save1.grid(row=0, column=1, padx=10, pady=10)
-
-    save2 = tk.Button(frame, text="Enregistrement 2")
-    save2.grid(row=0, column=2, padx=10, pady=10)
-
-    save3 = tk.Button(frame, text="Enregistrement 3")
-    save3.grid(row=0, column=3, padx=10, pady=10)
-    """
 
     restart = tk.Button(frame, text='Restart')
     restart.grid(row=5, column=5, padx=10, pady=10)

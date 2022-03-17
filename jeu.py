@@ -2,11 +2,9 @@ from interface import *
 from calculs import *
 from database import *
 from strat_denombrement import *
-import sqlite3
-from copy import deepcopy
 from sys import setrecursionlimit
-from random import choice
-
+from time import sleep
+from timeit import default_timer
 
 
 class HEX:
@@ -20,28 +18,46 @@ class HEX:
         self.plat = np.zeros((self.size, self.size), dtype=int)
         self.fe = tk.Tk()
         self.game_status = True
-        self.player1 = False
-        self.player2 = False
+        self.players = False, False
         self.begin = False
         self.timed = False
-
-        self.str_time = tk.StringVar()  # Variable de temps
-        self.str_time1 = tk.StringVar()  # Variable de temps
-        self.str_time2 = tk.StringVar()  # Variable de temps
-        self.tempsT = [default_timer(), 0, 0, 0, 0]
+        self.pause = False
+        self.temps = [0, 0, 0, 0, 0]
 
     def graphiques(self):
-        self.frame, self.partie1 = fenetre_jeu(self.fe, self.width, self.height)
-        save1, save2, save3, restart, pause, tomenu = button_create(self.frame)
-        background(self.partie1, self.scale, self.width, self.height, self.size)
-        affichage_plateau(self.partie1, self.plat, self.size, self.scale, self.width, self.height)
-        self.button_config(save1, save2, save3, restart, pause, tomenu)
+        self.frame, self.partie1, self.temps[2], self.temps[3], self.temps[4] = fenetre_jeu(self.fe, self.width, self.height, self.timed)
+
+        self.temps[2].set("%02d:%02d:%02d" % (0, 0, 0))
+
         if self.timed is True:
-            minuteur()
+            self.temps[3].set("%02d:%02d" % (5, 0))
+            self.temps[4].set("%02d:%02d" % (5, 0))
+
+        self.temps[0] = round(default_timer()*100)
+        self.updateTime()
+
+        background(self.partie1, self.scale, self.width, self.height, self.size)
+
+        affichage_plateau(self.partie1, self.plat, self.size, self.scale, self.width, self.height)
+
+        save1, save2, save3, restart, pause, tomenu = button_create(self.frame)
+        self.button_config(save1, save2, save3, restart, pause, tomenu)
 
     def reset(self):
         self.plat, self.ordre, self.tour, self.game_status = np.zeros((self.size, self.size), dtype=int), [], 0, True
         refresh_plateau(self.partie1, self.plat, self.ordre)
+
+    def pausef(self):
+        if self.pause is False:
+            self.pause = True
+            self.game_status = False
+            self.partie1.itemconfig("cellule", activefill='')
+        else:
+            self.pause = False
+            self.game_status = True
+            self.partie1.itemconfig("cellule", activefill=rgb_convert((180, 180, 180)))
+        print(self.pause)
+
 
     def clic_gauche(self, event):
         tags = self.partie1.gettags('current')
@@ -68,7 +84,7 @@ class HEX:
                     self.partie1.itemconfig("player2tk", fill='blue')
                     #tempsT[1] = tempsT[3]
                 else:
-                    self.partie1.itemconfig(tags[0], fill='blue', dash=(3, 3, 3, 3), outline=rgb_convert((230, 230, 230)), activefill="", width=2)
+                    self.partie1.itemconfig(tags[0], fill=rgb_convert((0,0,255)), dash=(3, 3, 3, 3), outline=rgb_convert((230, 230, 230)), activefill="", width=2)
                     self.plat[slot[0]][slot[1]] = 2
                     print("Tour", self.tour, ": Bleu (2)")
                     self.partie1.itemconfig("player1tk", fill='red')
@@ -81,7 +97,8 @@ class HEX:
 
     def button_config(self, save1, save2, save3, restart, pause, tomenu):
         restart.config(command=self.reset)
-        tomenu.config(command=self.fe.destroy)
+        tomenu.config(command=lambda: [self.partie1.delete ('all'), self.joueur.place (relx = 0.6, rely = 0.5, anchor = "center"), self.bot.place (relx = 0.4, rely = 0.5, anchor = "center")])
+        pause.config(command=self.pausef)
 
     def plein_ecran(self, event):
         if self.fe.attributes()[7] == 0:
@@ -97,6 +114,11 @@ class HEX:
             self.game_status = False
             team = self.plat[slot[0]][slot[1]]
 
+            if len(self.ordre) > 1:
+                self.partie1.itemconfig(str(self.ordre[-1][0]) + "," + str(self.ordre[-1][1]), dash="",outline='black', width=3)
+
+            self.partie1.itemconfig("cellule", activefill='')
+
             if team == 2:
                 print("victoire bleu")
             else:
@@ -105,44 +127,65 @@ class HEX:
             #fin_partie(team, search)
             # show_distance(team, search)
 
+    def game_action(self):
+        pass
 
-"""
-def lancementchrono():
-    tempsT[0] = default_timer()
-    updateTime()
+    def updateTime(self):
+
+        if self.pause is False:
+            self.temps[1] = round(default_timer()*100) - self.temps[0]
+            #print(self.temps)
+
+        minutes = int(self.temps[1] / 6000)  # Calcul des minutes
+        seconds = int(self.temps[1]/100 - minutes * 6000)  # Calcul des secondes
+        hseconds = int(self.temps[1] - minutes * 6000 - seconds * 100 )  # Calcul des milli-secondes
+
+        self.temps[2].set("%02d:%02d" % (minutes, seconds))
+
+        if self.timed is True:
+            if self.tour > -1   :
+                minu, secon = self.temps[3].get().split(':')
+                secon = int(secon)-1
+                if secon < 0:
+                    minu = int(minu)-1
+                    secon = 59
+                else:
+                    minu = int(minu)
+                self.temps[3].set("%02d:%02d" % (minu, secon))
+                self.temps[4].set("%02d:%02d" % (minutes, seconds))
+
+        self.fe.after(997, self.updateTime)
+        """
+        if self.tour % 2 == 0:
+            now = default_timer() - self.tempsT[2] - self.tempsT[0]
+            self.tempsT[3] = now + self.tempsT[0]
+
+        else:
+            now = default_timer() - self.tempsT[1]
+            self.tempsT[4] = now
 
 
-def updateTime():
-    global tour
-    if tour % 2 == 0:
-        now = default_timer() - tempsT[2] - tempsT[0]
-        tempsT[3] = now + tempsT[0]
+        now = 600 - now
+        minutes1 = int(now / 60)  # Calcul des minutes
+        seconds1 = int(now - minutes1 * 60.0)  # Calcul des secondes
+        hseconds1 = int((now - minutes1 * 60.0 - seconds1) * 100)  # Calcul des milli-secondes
 
-    else:
-        now = default_timer() - tempsT[1]
-        tempsT[4] = now
+        if self.tour % 2 == 0:
+            str_time1.set("%02d:%02d:%02d" % (minutes1, seconds1, hseconds1))  # Affichage
 
-    now = 600 - now
-    minutes1 = int(now / 60)  # Calcul des minutes
-    seconds1 = int(now - minutes1 * 60.0)  # Calcul des secondes
-    hseconds1 = int((now - minutes1 * 60.0 - seconds1) * 100)  # Calcul des milli-secondes
+        else:
+            str_time2.set("%02d:%02d:%02d" % (minutes1, seconds1, hseconds1))  # Affichage
 
-    if tour % 2 == 0:
-        str_time1.set("%02d:%02d:%02d" % (minutes1, seconds1, hseconds1))  # Affichage
-    else:
-        str_time2.set("%02d:%02d:%02d" % (minutes1, seconds1, hseconds1))  # Affichage
+        now = default_timer() - self.tempsT[0]
+        minutes = int(now / 60)  # Calcul des minutes
+        seconds = int(now - minutes * 60.0)  # Calcul des secondes
+        hseconds = int((now - minutes * 60.0 - seconds) * 100)  # Calcul des milli-secondes
 
-    now = default_timer() - tempsT[0]
-    minutes = int(now / 60)  # Calcul des minutes
-    seconds = int(now - minutes * 60.0)  # Calcul des secondes
-    hseconds = int((now - minutes * 60.0 - seconds) * 100)  # Calcul des milli-secondes
-    str_time.set("%02d:%02d:%02d" % (minutes, seconds, hseconds))  # Affichage
-    fe.after(50, updateTime)  # Actualisation toutes les 50 milli-secondes
+        self.str_time.set("%02d:%02d" % (minutes, seconds))  # Affichage
 
+        self.fe.after(1000, self.updateTime)  # Actualisation toutes les 50 milli-secondes
+        """
 
-chrono = tk.Button(frame, text='lancer chrono', command=lancementchrono)
-chrono.place(x=100, y=450)
-"""
 setrecursionlimit(1500)
 
 hex = HEX()
