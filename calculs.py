@@ -47,9 +47,7 @@ def verrous(plat, team):
     return False, False
 
 
-def detection_victoire(plat, slot, start, end):
-    team = plat[slot[0]][slot[1]]  # team = 1, le joueur blanc viens de jouer, team = 2 le joueur noir viens de jouer
-
+def detection_victoire(plat, slot, team, start, end):
     search = deepcopy(plat)  # creation d'une matrice de travail copié d'un plateau
 
     propagation(slot, search, team, 9)  # fonction récursive de propagation sur le plateau de travail en fonction du dernier coup joué

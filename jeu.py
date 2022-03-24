@@ -1,12 +1,13 @@
 from interface import *
 from calculs import *
 from database import *
-from strat_denombrement import *
+from strat_hub import ask_bot1
 from sys import setrecursionlimit
 from time import sleep
 from timeit import default_timer
 
-
+#changements des boutons commancer / pause / destroy
+# abandon / nouvelle partie
 class HEX:
     def __init__(self):
         self.width = 1000
@@ -17,11 +18,10 @@ class HEX:
         self.scale = (self.width - 250) / ((self.size - 1) * 3 + 2)
         self.plat = np.zeros((self.size, self.size), dtype=int)
         self.fe = tk.Tk()
-        self.game_status = True
-        self.players = False, False
+        self.game_status = False
+        self.players = True, True
         self.begin = False
         self.timed = False
-        self.pause = False
         self.temps = [0, 0, 0, 0, 0]
 
     def graphiques(self):
@@ -40,22 +40,25 @@ class HEX:
 
         affichage_plateau(self.partie1, self.plat, self.size, self.scale, self.width, self.height)
 
-        save1, save2, save3, restart, pause, tomenu = button_create(self.frame)
-        self.button_config(save1, save2, save3, restart, pause, tomenu)
+        save1, save2, save3, restart, self.playbutton, tomenu = button_create(self.frame)
+        self.button_config(save1, save2, save3, restart, tomenu)
 
     def reset(self):
         self.plat, self.ordre, self.tour, self.game_status = np.zeros((self.size, self.size), dtype=int), [], 0, True
         refresh_plateau(self.partie1, self.plat, self.ordre)
         self.temps[0] = round(default_timer() * 100)
+        self.temps[2].set("%02d:%02d" % (0, 0))
+        self.pausef()
+        self.playbutton.config(text="Commencer", state='normal')
 
     def pausef(self):
-        if self.pause is False:
-            self.pause = True
-            self.temps[1] = round(default_timer() * 100) - self.temps[0]
+        if self.game_status is True:
+            print("pause on")
             self.game_status = False
+            self.temps[1] = round(default_timer() * 100) - self.temps[0]
             self.partie1.itemconfig("cellule", activefill='')
         else:
-            self.pause = False
+            print("pause off")
             self.game_status = True
 
             for i in range(self.size):
@@ -66,6 +69,11 @@ class HEX:
                         self.partie1.itemconfig(tag, activefill=rgb_convert((180, 180, 180)))
 
             self.temps[0] = round(default_timer()*100) - self.temps[1]
+
+            if self.tour == 0:
+                self.playbutton.config(text='Pause')
+            self.nexts()
+
 
 
     def clic_gauche(self, event):
@@ -79,43 +87,14 @@ class HEX:
                 pass
 
             elif self.plat[slot[0]][slot[1]] == 0:
-
                 self.game_action(tags[0], slot)
-
-                """
-                self.partie1.tag_raise(tags[0])
-
-                print(self.ordre)
-                if len(self.ordre) != 0:
-                    print(str(self.ordre[-1][0]) + "," + str(self.ordre[-1][1]))
-                    self.partie1.itemconfig(str(self.ordre[-1][0]) + "," + str(self.ordre[-1][1]), dash="", outline='black', width=3)
-
-                self.ordre.append((slot[0], slot[1]))
-
-                if self.tour % 2 == 0:
-                    self.partie1.itemconfig(tags[0], fill='red', dash=(3, 3, 3, 3), outline=rgb_convert((230, 230, 230)), activefill="", width=2)
-                    self.plat[slot[0]][slot[1]] = 1
-                    print("Tour", self.tour, ': Rouge (1)')
-                    self.partie1.itemconfig("player1tk", fill='')
-                    self.partie1.itemconfig("player2tk", fill='blue')
-                    #tempsT[1] = tempsT[3]
-                else:
-                    self.partie1.itemconfig(tags[0], fill=rgb_convert((0,0,255)), dash=(3, 3, 3, 3), outline=rgb_convert((230, 230, 230)), activefill="", width=2)
-                    self.plat[slot[0]][slot[1]] = 2
-                    print("Tour", self.tour, ": Bleu (2)")
-                    self.partie1.itemconfig("player1tk", fill='red')
-                    self.partie1.itemconfig("player2tk", fill='')
-                    #tempsT[2] = tempsT[4]
-
-                print(self.plat)
-                self.tour += 1
-                """
                 self.test_victoire(slot)
+        self.nexts()
 
-    def button_config(self, save1, save2, save3, restart, pause, tomenu):
+    def button_config(self, save1, save2, save3, restart, tomenu):
         restart.config(command=self.reset)
         tomenu.config(command=lambda: [self.partie1.delete ('all'), self.joueur.place (relx = 0.6, rely = 0.5, anchor = "center"), self.bot.place (relx = 0.4, rely = 0.5, anchor = "center")])
-        pause.config(command=self.pausef)
+        self.playbutton.config(command=self.pausef)
 
     def plein_ecran(self, event):
         if self.fe.attributes()[7] == 0:
@@ -125,27 +104,29 @@ class HEX:
             self.fe.attributes('-fullscreen', False)
 
     def test_victoire(self, slot):
-        start, end = verrous(self.plat, self.plat[slot[0]][slot[1]])
+        team = self.plat[slot[0]][slot[1]]
         search = False
+        start, end = verrous(self.plat, team)
 
         if start is not False:
-            search = detection_victoire(self.plat, slot, start, end)
+            search = detection_victoire(self.plat, slot, team, start, end)
 
         if search is not False: #victoire
-            self.game_status = False
-            team = self.plat[slot[0]][slot[1]]
+            self.pausef()
+
+            self.partie1.itemconfig("player1tk", fill='')
+            self.partie1.itemconfig("player2tk", fill='')
 
             if len(self.ordre) > 1:
                 self.partie1.itemconfig(str(self.ordre[-1][0]) + "," + str(self.ordre[-1][1]), dash="",outline='black', width=3)
-
-            self.partie1.itemconfig("cellule", activefill='')
 
             if team == 2:
                 print("victoire bleu")
             else:
                 print("victoire rouge")
 
-            #fin_partie(team, search)
+            self.playbutton.config(state="disabled")
+            fin_partie(team, search)
             # show_distance(team, search)
 
     def game_action(self, tag, slot):
@@ -178,45 +159,33 @@ class HEX:
 
     def nexts(self):
 
-        if team == 2 and player2 is True and Game_status is True:
+        team = ((self.tour) % 2) + 1
 
-            slot = ask_bot(plat, team)
+        if team == 2 and self.players[1] is True and self.game_status is True:
+            slot = ask_bot1(self.plat, team)
             tag = str(slot[0]) + ',' + str(slot[1])
-            partie1.tag_raise(tag)
-            partie1.itemconfig(tag, fill='blue', dash=(3, 3, 3, 3), outline=Rgb_convert((230, 230, 230)), activefill="", width=2)
-            plat[slot[0]][slot[1]] = 2
-            ordre.append((slot[0], slot[1]))
-            Detection_victoire(plat, slot)
-            if player1 == True:
-                fe.update()
+            self.game_action(tag, slot)
+            self.test_victoire(slot)
+
+            if self.players[0] is True:
+                self.fe.update()
                 sleep(1)
-                nexts(plat, 1, ordre)
+                self.nexts()
 
-        elif team == 1 and player1 is True and Game_status is True:
-
-            if len(ordre) != 0:
-                partie1.itemconfig(str(ordre[len(ordre) - 1][0]) + "," + str(ordre[len(ordre) - 1][1]), dash="",
-                                   outline='black', width=3)
-
-            tour += 1
-            print("Tour", tour, ": rouge (1)")
-            print(plat)
-            slot = ask_bot(plat, team)
+        elif team == 1 and self.players[0] is True and self.game_status is True:
+            slot = ask_bot1(self.plat, team)
             tag = str(slot[0]) + ',' + str(slot[1])
-            partie1.tag_raise(tag)
-            partie1.itemconfig(tag, fill='red', dash=(3, 3, 3, 3), outline=Rgb_convert((230, 230, 230)), activefill="",
-                               width=2)
-            plat[slot[0]][slot[1]] = 1
-            ordre.append((slot[0], slot[1]))
-            Detection_victoire(plat, slot)
-            if player1 == True:
-                fe.update()
+            self.game_action(tag, slot)
+            self.test_victoire(slot)
+
+            if self.players[1] is True:
+                self.fe.update()
                 sleep(1)
-                nexts(plat, 2, ordre)
+                self.nexts()
 
     def updateTime(self):
 
-        if self.pause is False:
+        if self.game_status is True:
             self.temps[1] = round(default_timer()*100) - self.temps[0]
             #print(self.temps)
 

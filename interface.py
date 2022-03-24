@@ -17,8 +17,7 @@ def affichage_plateau(partie1, plat, size, scale, width, height):
             if plat[i][j] == 0:
                 partie1.create_polygon(x + (0.5 * scale), y, x + (1.5 * scale), y, x + (2 * scale), y + (scale * 0.866),
                                        x + (scale * 1.5), y + (scale * 2 * 0.866), x + (scale * 0.5), y + (scale * 2 * 0.866), x, y + (scale * 0.866),
-                                       fill=rgb_convert((160, 160, 160)), activefill=rgb_convert((180, 180, 180)),
-                                       outline='black', width=3, tags=(str(i) + "," + str(j), "cellule"))
+                                       fill=rgb_convert((160, 160, 160)), outline='black', width=3, tags=(str(i) + "," + str(j), "cellule"))
             if i == 0:
                 partie1.create_text(x, y + 0.2 * scale, font=police, fill='black', text=ascii_letters[j])
             if j == 0:
@@ -46,21 +45,17 @@ def refresh_plateau(partie1, plat, ordre):
                 partie1.itemconfig(tag, fill="blue", activefill='', dash="", outline='black', width=3)
 
 
-def fin_partie(team, search, ordre):
-
-    if len(ordre) != 0:
-        partie1.itemconfig(str(ordre[len(ordre) - 1][0]) + "," + str(ordre[len(ordre) - 1][1]), dash="", outline='black', width=3)
-
-    partie1.itemconfig("cellule", activefill='')
+def fin_partie(team, search):
     chemin = []
 
+    """
     if team == 1:
         depart = min(filter(lambda i: i > 10, search[0]))
         debut = list(where((search[0] == depart))[0])
 
         for i in debut:
             chemin.append((0, i))
-
+    """
 
 def show_distance(team, search):
     print(search)
@@ -123,11 +118,11 @@ def fenetre_jeu(fe, width, height, timed):
 
 def button_create(frame):
 
-    restart = tk.Button(frame, text='Restart')
+    restart = tk.Button(frame, text='Nouvelle partie')
     restart.grid(row=5, column=5, padx=10, pady=10)
 
-    pause = tk.Button(frame, text='Pause')
-    pause.grid(row=4, column=5, padx=10, pady=10)
+    playbutton = tk.Button(frame, text='Commencer')
+    playbutton.grid(row=4, column=5, padx=10, pady=10)
 
     tomenu = tk.Button(frame, text='Menu Principal')
     tomenu.grid(row=0, column=0, padx=10, pady=10)
@@ -159,7 +154,7 @@ def button_create(frame):
     B.grid(row=0, column=2, padx=10, pady=10)
     C.grid(row=0, column=3, padx=10, pady=10)
 
-    return A, B, C, restart, pause, tomenu
+    return A, B, C, restart, playbutton, tomenu
 
 def minuteur():
     str_time1 = tk.StringVar()  # Variable de temps

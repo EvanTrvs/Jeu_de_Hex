@@ -1,4 +1,6 @@
 from random import choice
+from copy import deepcopy
+import numpy as np
 
 
 def pre_pascal(mat, team, side):
@@ -58,13 +60,13 @@ def meilleur_coup(res, mat):
 
         if i[0] + 1 <= len(res) - 1:
             sum_voisin += res[i[0] + 1][i[1]]
-        if i[0] + 1 <= len(plat) - 1 and i[1] - 1 >= 0:
+        if i[0] + 1 <= len(res) - 1 and i[1] - 1 >= 0:
             sum_voisin += res[i[0] + 1][i[1] - 1]
         if i[1] - 1 >= 0:
             sum_voisin += res[i[0]][i[1] - 1]
-        if i[1] + 1 <= len(plat) - 1:
+        if i[1] + 1 <= len(res) - 1:
             sum_voisin += res[i[0]][i[1] + 1]
-        if i[0] - 1 >= 0 and i[1] + 1 <= len(plat) - 1:
+        if i[0] - 1 >= 0 and i[1] + 1 <= len(res) - 1:
             sum_voisin += res[i[0] - 1][i[1] + 1]
         if i[0] - 1 >= 0:
             sum_voisin += res[i[0] - 1][i[1]]
