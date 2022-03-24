@@ -27,7 +27,7 @@ class HEX:
     def graphiques(self):
         self.frame, self.partie1, self.temps[2], self.temps[3], self.temps[4] = fenetre_jeu(self.fe, self.width, self.height, self.timed)
 
-        self.temps[2].set("%02d:%02d:%02d" % (0, 0, 0))
+        self.temps[2].set("%02d:%02d" % (0, 0))
 
         if self.timed is True:
             self.temps[3].set("%02d:%02d" % (5, 0))
@@ -46,17 +46,26 @@ class HEX:
     def reset(self):
         self.plat, self.ordre, self.tour, self.game_status = np.zeros((self.size, self.size), dtype=int), [], 0, True
         refresh_plateau(self.partie1, self.plat, self.ordre)
+        self.temps[0] = round(default_timer() * 100)
 
     def pausef(self):
         if self.pause is False:
             self.pause = True
+            self.temps[1] = round(default_timer() * 100) - self.temps[0]
             self.game_status = False
             self.partie1.itemconfig("cellule", activefill='')
         else:
             self.pause = False
             self.game_status = True
-            self.partie1.itemconfig("cellule", activefill=rgb_convert((180, 180, 180)))
-        print(self.pause)
+
+            for i in range(self.size):
+                for j in range(self.size):
+                    tag = str(i) + ',' + str(j)
+
+                    if self.plat[i][j] == 0:
+                        self.partie1.itemconfig(tag, activefill=rgb_convert((180, 180, 180)))
+
+            self.temps[0] = round(default_timer()*100) - self.temps[1]
 
 
     def clic_gauche(self, event):
@@ -70,11 +79,18 @@ class HEX:
                 pass
 
             elif self.plat[slot[0]][slot[1]] == 0:
-                self.partie1.tag_raise(tags[0])
-                self.ordre.append((slot[0], slot[1]))
 
-                if len(self.ordre) > 1:
-                    self.partie1.itemconfig(str(self.ordre[-2][0]) + "," + str(self.ordre[-2][1]), dash="", outline='black', width=3)
+                self.game_action(tags[0], slot)
+
+                """
+                self.partie1.tag_raise(tags[0])
+
+                print(self.ordre)
+                if len(self.ordre) != 0:
+                    print(str(self.ordre[-1][0]) + "," + str(self.ordre[-1][1]))
+                    self.partie1.itemconfig(str(self.ordre[-1][0]) + "," + str(self.ordre[-1][1]), dash="", outline='black', width=3)
+
+                self.ordre.append((slot[0], slot[1]))
 
                 if self.tour % 2 == 0:
                     self.partie1.itemconfig(tags[0], fill='red', dash=(3, 3, 3, 3), outline=rgb_convert((230, 230, 230)), activefill="", width=2)
@@ -93,6 +109,7 @@ class HEX:
 
                 print(self.plat)
                 self.tour += 1
+                """
                 self.test_victoire(slot)
 
     def button_config(self, save1, save2, save3, restart, pause, tomenu):
@@ -108,9 +125,13 @@ class HEX:
             self.fe.attributes('-fullscreen', False)
 
     def test_victoire(self, slot):
-        search = detection_victoire(self.plat, slot)
+        start, end = verrous(self.plat, self.plat[slot[0]][slot[1]])
+        search = False
 
-        if search is not False:
+        if start is not False:
+            search = detection_victoire(self.plat, slot, start, end)
+
+        if search is not False: #victoire
             self.game_status = False
             team = self.plat[slot[0]][slot[1]]
 
@@ -127,8 +148,71 @@ class HEX:
             #fin_partie(team, search)
             # show_distance(team, search)
 
-    def game_action(self):
-        pass
+    def game_action(self, tag, slot):
+
+        if len(self.ordre) != 0:
+            self.partie1.itemconfig(str(self.ordre[-1][0]) + "," + str(self.ordre[-1][1]), dash="", outline='black', width=3)
+
+        team = ((self.tour) % 2) + 1
+
+        self.partie1.tag_raise(tag)
+        self.ordre.append((slot[0], slot[1]))
+
+        if team == 1:
+            self.partie1.itemconfig(tag, fill='red', dash=(3, 3, 3, 3), outline=rgb_convert((230, 230, 230)), activefill="", width=2)
+            print("Tour", self.tour, ': Rouge (1)')
+            self.partie1.itemconfig("player1tk", fill='')
+            self.partie1.itemconfig("player2tk", fill='blue')
+            # tempsT[1] = tempsT[3]
+        else:
+            self.partie1.itemconfig(tag, fill=rgb_convert((0, 0, 255)), dash=(3, 3, 3, 3),outline=rgb_convert((230, 230, 230)), activefill="", width=2)
+            self.plat[slot[0]][slot[1]] = 2
+            print("Tour", self.tour, ": Bleu (2)")
+            self.partie1.itemconfig("player1tk", fill='red')
+            self.partie1.itemconfig("player2tk", fill='')
+            # tempsT[2] = tempsT[4]
+
+        self.plat[slot[0]][slot[1]] = team
+        print(self.plat)
+        self.tour += 1
+
+    def nexts(self):
+
+        if team == 2 and player2 is True and Game_status is True:
+
+            slot = ask_bot(plat, team)
+            tag = str(slot[0]) + ',' + str(slot[1])
+            partie1.tag_raise(tag)
+            partie1.itemconfig(tag, fill='blue', dash=(3, 3, 3, 3), outline=Rgb_convert((230, 230, 230)), activefill="", width=2)
+            plat[slot[0]][slot[1]] = 2
+            ordre.append((slot[0], slot[1]))
+            Detection_victoire(plat, slot)
+            if player1 == True:
+                fe.update()
+                sleep(1)
+                nexts(plat, 1, ordre)
+
+        elif team == 1 and player1 is True and Game_status is True:
+
+            if len(ordre) != 0:
+                partie1.itemconfig(str(ordre[len(ordre) - 1][0]) + "," + str(ordre[len(ordre) - 1][1]), dash="",
+                                   outline='black', width=3)
+
+            tour += 1
+            print("Tour", tour, ": rouge (1)")
+            print(plat)
+            slot = ask_bot(plat, team)
+            tag = str(slot[0]) + ',' + str(slot[1])
+            partie1.tag_raise(tag)
+            partie1.itemconfig(tag, fill='red', dash=(3, 3, 3, 3), outline=Rgb_convert((230, 230, 230)), activefill="",
+                               width=2)
+            plat[slot[0]][slot[1]] = 1
+            ordre.append((slot[0], slot[1]))
+            Detection_victoire(plat, slot)
+            if player1 == True:
+                fe.update()
+                sleep(1)
+                nexts(plat, 2, ordre)
 
     def updateTime(self):
 
@@ -136,23 +220,25 @@ class HEX:
             self.temps[1] = round(default_timer()*100) - self.temps[0]
             #print(self.temps)
 
-        minutes = int(self.temps[1] / 6000)  # Calcul des minutes
-        seconds = int(self.temps[1]/100 - minutes * 6000)  # Calcul des secondes
-        hseconds = int(self.temps[1] - minutes * 6000 - seconds * 100 )  # Calcul des milli-secondes
+            minutes = int(self.temps[1] / 6000)  # Calcul des minutes
+            seconds = int(self.temps[1]/100 - minutes * 60)  # Calcul des secondes
+            hseconds = int(self.temps[1] - minutes * 6000 - seconds * 100 )  # Calcul des milli-secondes
 
-        self.temps[2].set("%02d:%02d" % (minutes, seconds))
+            self.temps[2].set("%02d:%02d" % (minutes, seconds))
 
-        if self.timed is True:
-            if self.tour > -1   :
-                minu, secon = self.temps[3].get().split(':')
-                secon = int(secon)-1
-                if secon < 0:
-                    minu = int(minu)-1
-                    secon = 59
-                else:
-                    minu = int(minu)
-                self.temps[3].set("%02d:%02d" % (minu, secon))
-                self.temps[4].set("%02d:%02d" % (minutes, seconds))
+
+            if self.timed is True:
+                if self.tour > -1   :
+                    minu, secon = self.temps[3].get().split(':')
+                    secon = int(secon)-1
+                    if secon < 0:
+                        minu = int(minu)-1
+                        secon = 59
+                    else:
+                        minu = int(minu)
+                    self.temps[3].set("%02d:%02d" % (minu, secon))
+                    self.temps[4].set("%02d:%02d" % (minutes, seconds))
+
 
         self.fe.after(997, self.updateTime)
         """

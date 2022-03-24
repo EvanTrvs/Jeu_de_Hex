@@ -104,8 +104,8 @@ def fenetre_jeu(fe, width, height, timed):
     partie1.create_rectangle(850, 50, 900, 70, fill='', tag="player2tk")
 
     str_time = tk.StringVar()
-    chron = tk.Label(frame, textvariable=str_time)
-    chron.place(x=100, y=500)
+    chron = tk.Label(frame, textvariable=str_time, font=("", 30))
+    chron.place(x=5, y=height-10)
 
     if timed is True:
         str_time1 = tk.StringVar()  # Variable de temps

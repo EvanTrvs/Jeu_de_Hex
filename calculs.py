@@ -29,50 +29,36 @@ def propagation(slot, search, team, distance):
             propagation((slot[0] - 1, slot[1]), search, team, distance)
 
 
-def detection_victoire(plat, slot):
+def verrous(plat, team):
     size = len(plat)
-    team = plat[slot[0]][slot[1]]  # team = 1, le joueur blanc viens de jouer, team = 2 le joueur noir viens de jouer
-
-    start = []  # liste des coordonnées de départ
 
     if team == 1:
-        for i in range(size):  # verrou de pion jouer sur un bord
-            if plat[0][i] == team:
-                start.append((0, i))
+        start = [(0, k) for k, i in enumerate(plat[0]) if i == team]
+        end = [(size-1, k) for k, i in enumerate(plat[size - 1]) if i == team]
     else:
-        for i in range(size):  # verrou de pion jouer sur un bord
-            if plat[i][0] == team:
-                start.append((i, 0))
+        start = [(k, 0) for k, i in enumerate(plat[:, 0]) if i == team]
+        end = [(k, size-1) for k, i in enumerate(plat[:, size - 1]) if i == team]
 
-    if len(start) == 0:
-        pass
-    else:
-        end = []  # liste des coordonnées d'arrivée
-        # print("verrou 1 ok")
+    if len(start) != 0:
+        if len(end) != 0:
+            if plat[plat == team].size >= size:  # verrou de minimum de pion joué pour une victoire
+                return start, end  # print("verrou 3 ok")
 
-        if team == 1:
-            for i in range(size):  # verrou de pion jouer sur l'autre bord
-                if plat[size - 1][i] == team:
-                    end.append((size - 1, i))
-        else:
-            for i in range(size):  # verrou de pion jouer sur l'autre bord
-                if plat[i][size - 1] == team:
-                    end.append((i, size - 1))
+    return False, False
 
-        if len(end) == 0:
-            pass
-        else:
-            # print("verrou 2 ok")
-            if plat[plat == team].size < size:  # verrou de minimum de pion joué pour une victoire
-                pass
-            else:
-                # print("verrou 3 ok")
-                search = deepcopy(plat)  # creation d'une matrice de travail copié d'un plateau
 
-                propagation(slot, search, team, 9)  # fonction récursive de propagation sur le plateau de travail en fonction du dernier coup joué
-                print(search)
+def detection_victoire(plat, slot, start, end):
+    team = plat[slot[0]][slot[1]]  # team = 1, le joueur blanc viens de jouer, team = 2 le joueur noir viens de jouer
 
-                if True in [search[k[0]][k[1]] >= 10 for k in start]:  # si un des pions de la team touche un des bord et est relier au dernier coup
-                    if True in [search[q[0]][q[1]] >= 10 for q in end]:  # si un des pions de la team touche l'autre bord et est relier au dernier coup
-                        return search
+    search = deepcopy(plat)  # creation d'une matrice de travail copié d'un plateau
+
+    propagation(slot, search, team, 9)  # fonction récursive de propagation sur le plateau de travail en fonction du dernier coup joué
+    print(search)
+
+    print(start)
+    print(end)
+    if any(filter(lambda x: x >= 10, {search[i[0]][i[1]] for i in start})) is True:  # si un des pions de la team touche un des bord et est relier au dernier coup
+        if any(filter(lambda x: x >= 10, {search[i[0]][i[1]] for i in end})) is True:  # si un des pions de la team touche l'autre bord et est relier au dernier coup
+            return search
+
     return False
