@@ -85,17 +85,17 @@ def fenetre_jeu(fe, width, height, timed):
     frame.place(relx=0.5, rely=0.5, anchor="center")
 
     partie1 = tk.Canvas(frame, width=width, height=height, bg=rgb_convert((200, 160, 150)), highlightbackground='red', highlightthickness=0)
-    partie1.grid(row=1, column=0, rowspan=5, columnspan=4)
+    partie1.grid(row=1, column=0, rowspan=6, columnspan=4)
 
     partie4 = tk.Canvas(frame, width=(width * (0.618 ** 3)), height=(width * (0.618 ** 6)), bg='pink')
     partie4.grid(row=0, column=5)
 
     partie4.create_text(60, 30, fill='black', text='HexGame.logo')
 
-    partie1.create_text(75, 30, text='Player 1')
+    partie1.create_text(75, 30, text='Joueur 1')
     partie1.create_rectangle(50, 50, 100, 70, fill='red', tag="player1tk")
 
-    partie1.create_text(875, 30, text='Player 2')
+    partie1.create_text(875, 30, text='Joueur 2')
     partie1.create_rectangle(850, 50, 900, 70, fill='', tag="player2tk")
 
     str_time = tk.StringVar()
@@ -119,10 +119,10 @@ def fenetre_jeu(fe, width, height, timed):
 def button_create(frame):
 
     restart = tk.Button(frame, text='Nouvelle partie')
-    restart.grid(row=5, column=5, padx=10, pady=10)
+    restart.grid(row=6, column=5, padx=10, pady=10)
 
     playbutton = tk.Button(frame, text='Commencer')
-    playbutton.grid(row=4, column=5, padx=10, pady=10)
+    playbutton.grid(row=5, column=5, padx=10, pady=10)
 
     tomenu = tk.Button(frame, text='Menu Principal')
     tomenu.grid(row=0, column=0, padx=10, pady=10)

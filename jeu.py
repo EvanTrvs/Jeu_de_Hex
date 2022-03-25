@@ -6,8 +6,7 @@ from sys import setrecursionlimit
 from time import sleep
 from timeit import default_timer
 
-#changements des boutons commancer / pause / destroy
-# abandon / nouvelle partie
+
 class HEX:
     def __init__(self):
         self.width = 1000
@@ -18,10 +17,11 @@ class HEX:
         self.scale = (self.width - 250) / ((self.size - 1) * 3 + 2)
         self.plat = np.zeros((self.size, self.size), dtype=int)
         self.fe = tk.Tk()
+        self.bot = ask_bot1
         self.game_status = False
-        self.players = True, True
+        self.players = False, False
         self.begin = False
-        self.timed = False
+        self.timed = True
         self.temps = [0, 0, 0, 0, 0]
 
     def graphiques(self):
@@ -33,9 +33,6 @@ class HEX:
             self.temps[3].set("%02d:%02d" % (5, 0))
             self.temps[4].set("%02d:%02d" % (5, 0))
 
-        self.temps[0] = round(default_timer()*100)
-        self.updateTime()
-
         background(self.partie1, self.scale, self.width, self.height, self.size)
 
         affichage_plateau(self.partie1, self.plat, self.size, self.scale, self.width, self.height)
@@ -43,11 +40,17 @@ class HEX:
         save1, save2, save3, restart, self.playbutton, tomenu = button_create(self.frame)
         self.button_config(save1, save2, save3, restart, tomenu)
 
+        self.fe.bind("<Button-1>", self.clic_gauche)
+
     def reset(self):
         self.plat, self.ordre, self.tour, self.game_status = np.zeros((self.size, self.size), dtype=int), [], 0, True
         refresh_plateau(self.partie1, self.plat, self.ordre)
         self.temps[0] = round(default_timer() * 100)
         self.temps[2].set("%02d:%02d" % (0, 0))
+        if self.timed is True:
+            self.temps[3].set("%02d:%02d" % (5, 0))
+            self.temps[4].set("%02d:%02d" % (5, 0))
+
         self.pausef()
         self.playbutton.config(text="Commencer", state='normal')
 
@@ -60,6 +63,10 @@ class HEX:
         else:
             print("pause off")
             self.game_status = True
+            self.temps[0] = round(default_timer() * 100) - self.temps[1]
+            if self.tour == 0:
+                self.temps[0] = round(default_timer() * 100)
+                self.updateTime()
 
             for i in range(self.size):
                 for j in range(self.size):
@@ -68,10 +75,9 @@ class HEX:
                     if self.plat[i][j] == 0:
                         self.partie1.itemconfig(tag, activefill=rgb_convert((180, 180, 180)))
 
-            self.temps[0] = round(default_timer()*100) - self.temps[1]
-
             if self.tour == 0:
                 self.playbutton.config(text='Pause')
+
             self.nexts()
 
 
@@ -91,9 +97,13 @@ class HEX:
                 self.test_victoire(slot)
         self.nexts()
 
+    def truc(self):
+        [widget.destroy() for widget in self.frame.winfo_children()]
+        self.fe.unbind("<Button-1>")
+
     def button_config(self, save1, save2, save3, restart, tomenu):
         restart.config(command=self.reset)
-        tomenu.config(command=lambda: [self.partie1.delete ('all'), self.joueur.place (relx = 0.6, rely = 0.5, anchor = "center"), self.bot.place (relx = 0.4, rely = 0.5, anchor = "center")])
+        tomenu.config(command=self.truc)
         self.playbutton.config(command=self.pausef)
 
     def plein_ecran(self, event):
@@ -161,24 +171,13 @@ class HEX:
 
         team = ((self.tour) % 2) + 1
 
-        if team == 2 and self.players[1] is True and self.game_status is True:
-            slot = ask_bot1(self.plat, team)
+        if self.players[self.tour % 2] is True and self.game_status is True:
+            slot = self.bot(self.plat, team)
             tag = str(slot[0]) + ',' + str(slot[1])
             self.game_action(tag, slot)
             self.test_victoire(slot)
 
-            if self.players[0] is True:
-                self.fe.update()
-                sleep(1)
-                self.nexts()
-
-        elif team == 1 and self.players[0] is True and self.game_status is True:
-            slot = ask_bot1(self.plat, team)
-            tag = str(slot[0]) + ',' + str(slot[1])
-            self.game_action(tag, slot)
-            self.test_victoire(slot)
-
-            if self.players[1] is True:
+            if self.players[self.tour % 2] is True:
                 self.fe.update()
                 sleep(1)
                 self.nexts()
@@ -195,21 +194,20 @@ class HEX:
 
             self.temps[2].set("%02d:%02d" % (minutes, seconds))
 
-
+            """
             if self.timed is True:
-                if self.tour > -1   :
-                    minu, secon = self.temps[3].get().split(':')
-                    secon = int(secon)-1
-                    if secon < 0:
-                        minu = int(minu)-1
-                        secon = 59
-                    else:
-                        minu = int(minu)
-                    self.temps[3].set("%02d:%02d" % (minu, secon))
-                    self.temps[4].set("%02d:%02d" % (minutes, seconds))
+                minuteur = 30000 - self.temps[1]
+                mminutes = int(minuteur / 6000)  # Calcul des minutes
+                mseconds = int(minuteur/100 - mminutes * 60)  # Calcul des secondes
+                mhseconds = int(minuteur - mminutes * 6000 - mseconds * 100)  # Calcul des milli-secondes
 
+                self.temps[3].set("%02d:%02d" % (mminutes, mseconds))
+                self.temps[4].set("%02d:%02d" % (mminutes, mseconds))
 
-        self.fe.after(997, self.updateTime)
+                print(self.temps[1], minuteur)
+            """
+
+        self.fe.after(995, self.updateTime)
         """
         if self.tour % 2 == 0:
             now = default_timer() - self.tempsT[2] - self.tempsT[0]
@@ -248,6 +246,6 @@ hex.graphiques()
 
 hex.fe.bind("<f>", hex.plein_ecran)
 hex.fe.bind("<KeyPress-F11>", hex.plein_ecran)
-hex.fe.bind("<Button-1>", hex.clic_gauche)
+#hex.fe.bind("<Button-1>", hex.clic_gauche)
 
 hex.fe.mainloop()

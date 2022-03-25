@@ -1,6 +1,5 @@
 from strat_denombrement import *
-import numpy as np
-from copy import deepcopy
+
 
 def ask_bot1(mat, team):
     mat2 = deepcopy(np.transpose(mat))
