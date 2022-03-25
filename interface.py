@@ -127,24 +127,24 @@ def button_create(frame):
     tomenu = tk.Button(frame, text='Menu Principal')
     tomenu.grid(row=0, column=0, padx=10, pady=10)
 
-    A = tk.Menubutton(frame, text="Menu A")
-    B = tk.Menubutton(frame, text="Menu B")
-    C = tk.Menubutton(frame, text="Menu C")
+    A = tk.Menubutton(frame, text="Sauvegarde A")
+    B = tk.Menubutton(frame, text="Sauvegarde B")
+    C = tk.Menubutton(frame, text="Sauvegarde C")
 
     OA = tk.Menu(A)
-    OA.add_command(label="Enreg1")
-    OA.add_command(label="Charg1")
-    OA.entryconfig('Charg1', state='disabled')
+    OA.add_command(label="Enregistrer sur A")
+    OA.add_command(label="Charger A")
+    OA.entryconfig('Charger A', state='disabled')
 
     OB = tk.Menu(B)
-    OB.add_command(label="Enreg2")
-    OB.add_command(label="Charg2")
-    OB.entryconfig('Charg2', state='disabled')
+    OB.add_command(label="Enregistrer sur B")
+    OB.add_command(label="Charger B")
+    OB.entryconfig('Charger B', state='disabled')
 
     OC = tk.Menu(C)
-    OC.add_command(label="Enreg3")
-    OC.add_command(label="Charg3")
-    OC.entryconfig('Charg3', state='disabled')
+    OC.add_command(label="Enregistrer sur C")
+    OC.add_command(label="Charger C")
+    OC.entryconfig('Charger C', state='disabled')
 
     A["menu"] = OA
     B["menu"] = OB
@@ -156,17 +156,9 @@ def button_create(frame):
 
     return A, B, C, restart, playbutton, tomenu
 
-def minuteur():
-    str_time1 = tk.StringVar()  # Variable de temps
-    chron1 = tk.Label(frame, textvariable=str_time1)
-    chron1.place(x=50, y=90)
-
-    str_time2 = tk.StringVar()  # Variable de temps
-    chron2 = tk.Label(frame, textvariable=str_time2)
-    chron2.place(x=850, y=90)
-
-    str_time1.set("%02d:%02d:%02d" % (10, 0, 0))
-    str_time2.set("%02d:%02d:%02d" % (10, 0, 0))
+def fenetre_principal(fe, frame):
+    [widget.destroy() for widget in frame.winfo_children()]
+    fe.unbind("<Button-1>")
 
 
 def background(partie1, scale, width, height, size):

@@ -21,8 +21,9 @@ class HEX:
         self.game_status = False
         self.players = False, False
         self.begin = False
-        self.timed = True
+        self.timed = False
         self.temps = [0, 0, 0, 0, 0]
+        self.botcooldown = 1
 
     def graphiques(self):
         self.frame, self.partie1, self.temps[2], self.temps[3], self.temps[4] = fenetre_jeu(self.fe, self.width, self.height, self.timed)
@@ -97,13 +98,9 @@ class HEX:
                 self.test_victoire(slot)
         self.nexts()
 
-    def truc(self):
-        [widget.destroy() for widget in self.frame.winfo_children()]
-        self.fe.unbind("<Button-1>")
-
     def button_config(self, save1, save2, save3, restart, tomenu):
         restart.config(command=self.reset)
-        tomenu.config(command=self.truc)
+        tomenu.config(command=lambda: fenetre_principal(self.fe, self.frame))
         self.playbutton.config(command=self.pausef)
 
     def plein_ecran(self, event):
@@ -179,67 +176,67 @@ class HEX:
 
             if self.players[self.tour % 2] is True:
                 self.fe.update()
-                sleep(1)
+                sleep(self.botcooldown)
                 self.nexts()
 
     def updateTime(self):
+        sleept = 997
 
         if self.game_status is True:
             self.temps[1] = round(default_timer()*100) - self.temps[0]
-            #print(self.temps)
 
             minutes = int(self.temps[1] / 6000)  # Calcul des minutes
-            seconds = int(self.temps[1]/100 - minutes * 60)  # Calcul des secondes
-            hseconds = int(self.temps[1] - minutes * 6000 - seconds * 100 )  # Calcul des milli-secondes
+            secondes = int(self.temps[1]/100 - minutes * 60)  # Calcul des secondes
+            csecondes = int(self.temps[1] - minutes * 6000 - secondes * 100 )  # Calcul des milli-secondes
 
-            self.temps[2].set("%02d:%02d" % (minutes, seconds))
+            self.temps[2].set("%02d:%02d" % (minutes, secondes))
 
-            """
             if self.timed is True:
-                minuteur = 30000 - self.temps[1]
-                mminutes = int(minuteur / 6000)  # Calcul des minutes
-                mseconds = int(minuteur/100 - mminutes * 60)  # Calcul des secondes
-                mhseconds = int(minuteur - mminutes * 6000 - mseconds * 100)  # Calcul des milli-secondes
+                m_csecondes = 100 - csecondes
+                m_secondes = 32 - secondes
+                m_minutes = 0 - minutes
 
-                self.temps[3].set("%02d:%02d" % (mminutes, mseconds))
-                self.temps[4].set("%02d:%02d" % (mminutes, mseconds))
+                if m_secondes <= 0 and m_csecondes <= 90:
+                    self.pausef()
 
-                print(self.temps[1], minuteur)
-            """
+                    self.partie1.itemconfig("player1tk", fill='')
+                    self.partie1.itemconfig("player2tk", fill='')
 
-        self.fe.after(995, self.updateTime)
-        """
-        if self.tour % 2 == 0:
-            now = default_timer() - self.tempsT[2] - self.tempsT[0]
-            self.tempsT[3] = now + self.tempsT[0]
+                    if len(self.ordre) > 1:
+                        self.partie1.itemconfig(str(self.ordre[-1][0]) + "," + str(self.ordre[-1][1]), dash="",
+                                                outline='black', width=3)
 
-        else:
-            now = default_timer() - self.tempsT[1]
-            self.tempsT[4] = now
+                    if team == 2:
+                        print("victoire bleu")
+                    else:
+                        print("victoire rouge")
 
+                    self.playbutton.config(state="disabled")
+                else:
+                    if csecondes == 0:
+                        m_csecondes = 0
+                        m_secondes += 1
+                        if m_secondes == 60:
+                            m_secondes = 0
+                            m_minutes += 1
 
-        now = 600 - now
-        minutes1 = int(now / 60)  # Calcul des minutes
-        seconds1 = int(now - minutes1 * 60.0)  # Calcul des secondes
-        hseconds1 = int((now - minutes1 * 60.0 - seconds1) * 100)  # Calcul des milli-secondes
+                    if m_minutes == 0 and m_secondes <= 30:
+                        self.temps[3].set("%02d:%02d:%02d" % (m_minutes, m_secondes, m_csecondes))
+                        self.temps[4].set("%02d:%02d:%02d" % (m_minutes, m_secondes, m_csecondes))
+                        sleept = 80
+                    else:
+                        if m_csecondes > 0:
+                            m_secondes += 1
+                            if m_secondes > 59:
+                                m_secondes = 0
+                                m_minutes += 1
 
-        if self.tour % 2 == 0:
-            str_time1.set("%02d:%02d:%02d" % (minutes1, seconds1, hseconds1))  # Affichage
+                        self.temps[3].set("%02d:%02d" % (m_minutes, m_secondes))
+                        self.temps[4].set("%02d:%02d" % (m_minutes, m_secondes))
 
-        else:
-            str_time2.set("%02d:%02d:%02d" % (minutes1, seconds1, hseconds1))  # Affichage
+        self.fe.after(sleept, self.updateTime)
 
-        now = default_timer() - self.tempsT[0]
-        minutes = int(now / 60)  # Calcul des minutes
-        seconds = int(now - minutes * 60.0)  # Calcul des secondes
-        hseconds = int((now - minutes * 60.0 - seconds) * 100)  # Calcul des milli-secondes
-
-        self.str_time.set("%02d:%02d" % (minutes, seconds))  # Affichage
-
-        self.fe.after(1000, self.updateTime)  # Actualisation toutes les 50 milli-secondes
-        """
-
-setrecursionlimit(1500)
+setrecursionlimit(2000)
 
 hex = HEX()
 hex.graphiques()
