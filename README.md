@@ -28,7 +28,7 @@ Le fichier à exécuter est jeu.py
 * Mode de Jeu rapides avec Minuteur
 
 ## Sauvegardes
-Possibilitées de Sauvegarde de partie, trois emplacements de sauvegarde disponible avec chargement et éditions de celles-ci 
+Possibilitées de Sauvegarde de partie, trois emplacements de sauvegarde disponible avec chargement et éditions de celles-ci.
 
 ## Créateurs
 Thibaud et Evan
