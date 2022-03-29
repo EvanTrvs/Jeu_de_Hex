@@ -19,13 +19,16 @@ https://www.python.org/downloads/
 Il suffit de télécharger la source au format ZIP et de la décompresser.
 
 ## Exécution
-Le fichier à exécuter est (pas encore défini)
-
+Le fichier à exécuter est jeu.py
 
 ## Configuration d'une partie
-* (pas encore défini)
-* (pas encore défini)
+* Sélection : Joueur contre Joueur - Joueur contre Bot - Bot contre Bot
+* Taille du plateau
+* Sélection de la stratégie de jeu du Bot
+* Mode de Jeu rapides avec Minuteur
 
+## Sauvegardes
+Possibilitées de Sauvegarde de partie, trois emplacements de sauvegarde disponible avec chargement et éditions de celles-ci 
 
 ## Créateurs
 Thibaud et Evan
