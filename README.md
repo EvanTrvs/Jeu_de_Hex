@@ -1,4 +1,4 @@
-Voici les différents codes python qui nous utilisons pour réaliser le projet Jeu de Hex, dans le cadre de projets PeiP.
+Voici les différents fichier qui nous utilisons pour réaliser le projet de Jeu de Hex, dans le cadre de projets PeiP.
 
 ## Introduction au jeu
 Le jeu de Hex est un jeu de société combinatoire abstrait pour deux joueurs se jouant sur une grille en forme de losange dont les cases sont hexagonales.
