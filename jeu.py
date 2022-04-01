@@ -9,24 +9,38 @@ from timeit import default_timer
 
 class HEX:
     def __init__(self):
-        self.width = 1000
+        self.width = 1400
         self.height = round(self.width * 0.618)
         self.size = 5
         self.tour = 0
         self.ordre = []
-        self.scale = (self.width - 250) / ((self.size - 1) * 3 + 2)
+        self.scale = round((self.width - 250) / ((self.size - 1) * 3 + 2))
         self.plat = np.zeros((self.size, self.size), dtype=int)
-        self.fe = tk.Tk()
         self.bot = ask_bot1
         self.game_status = False
         self.players = False, False
         self.begin = False
         self.timed = False
-        self.temps = [0, 0, 0, 0, 0]
+        self.temps = [0, 0, 0, 0, 0, 0]
         self.botcooldown = 1
+        self.fe, self.frame = structure_tkinter(self.width, self.height)
+        
+    def ecran_accueil(self, *event):
+        game_status = False
+        shortcut, play = affichage_accueil(self.fe, self.frame, self.scale)
+        shortcut.config(command = self.ecran_jeu)
+        play.config(command = self.ecran_parametres)
+        self.fe.bind("<Escape>", lambda x: self.fe.destroy())
+        self.fe.unbind("<Button-1>")
+        self.fe.unbind("<space>")
+        
+    def ecran_parametres(self):
+        menuprincipal = affichage_parametres(self.fe, self.frame, self.scale)
+        menuprincipal.config(command = self.ecran_accueil)
+        self.fe.bind("<Escape>", self.ecran_accueil)
 
-    def graphiques(self):
-        self.frame, self.partie1, self.temps[2], self.temps[3], self.temps[4] = fenetre_jeu(self.fe, self.width, self.height, self.timed)
+    def ecran_jeu(self):
+        self.partie1, self.temps[2], self.temps[3], self.temps[4] = fenetre_jeu(self.fe, self.frame, self.width, self.height, self.timed, self.scale)
 
         self.temps[2].set("%02d:%02d" % (0, 0))
 
@@ -38,10 +52,12 @@ class HEX:
 
         affichage_plateau(self.partie1, self.plat, self.size, self.scale, self.width, self.height)
 
-        save1, save2, save3, restart, self.playbutton, tomenu = button_create(self.frame)
+        save1, save2, save3, restart, self.playbutton, tomenu = button_create(self.frame, self.scale)
         self.button_config(save1, save2, save3, restart, tomenu)
 
         self.fe.bind("<Button-1>", self.clic_gauche)
+        self.fe.bind("<Escape>", self.ecran_accueil)
+        self.fe.bind("<space>", self.pausef)
 
     def reset(self):
         self.plat, self.ordre, self.tour, self.game_status = np.zeros((self.size, self.size), dtype=int), [], 0, True
@@ -55,19 +71,21 @@ class HEX:
         self.pausef()
         self.playbutton.config(text="Commencer", state='normal')
 
-    def pausef(self):
+    def pausef(self, *event):
         if self.game_status is True:
-            print("pause on")
             self.game_status = False
             self.temps[1] = round(default_timer() * 100) - self.temps[0]
             self.partie1.itemconfig("cellule", activefill='')
+            self.playbutton.config(bg='red')
+            print("pause on")
         else:
-            print("pause off")
             self.game_status = True
             self.temps[0] = round(default_timer() * 100) - self.temps[1]
-            if self.tour == 0:
+            
+            if self.temps[1] == 0:
                 self.temps[0] = round(default_timer() * 100)
-                self.updateTime()
+                self.update_time()
+                self.playbutton.config(text='Pause')
 
             for i in range(self.size):
                 for j in range(self.size):
@@ -75,12 +93,9 @@ class HEX:
 
                     if self.plat[i][j] == 0:
                         self.partie1.itemconfig(tag, activefill=rgb_convert((180, 180, 180)))
-
-            if self.tour == 0:
-                self.playbutton.config(text='Pause')
-
+            self.playbutton.config(bg='white')
+            print("pause off")
             self.nexts()
-
 
 
     def clic_gauche(self, event):
@@ -100,7 +115,7 @@ class HEX:
 
     def button_config(self, save1, save2, save3, restart, tomenu):
         restart.config(command=self.reset)
-        tomenu.config(command=lambda: fenetre_principal(self.fe, self.frame))
+        tomenu.config(command=self.ecran_accueil)
         self.playbutton.config(command=self.pausef)
 
     def plein_ecran(self, event):
@@ -120,6 +135,7 @@ class HEX:
 
         if search is not False: #victoire
             self.pausef()
+            self.fe.unbind("<space>")
 
             self.partie1.itemconfig("player1tk", fill='')
             self.partie1.itemconfig("player2tk", fill='')
@@ -179,8 +195,8 @@ class HEX:
                 sleep(self.botcooldown)
                 self.nexts()
 
-    def updateTime(self):
-        sleept = 997
+    def update_time(self):
+        sleep_time = 997
 
         if self.game_status is True:
             self.temps[1] = round(default_timer()*100) - self.temps[0]
@@ -193,8 +209,8 @@ class HEX:
 
             if self.timed is True:
                 m_csecondes = 100 - csecondes
-                m_secondes = 32 - secondes
-                m_minutes = 0 - minutes
+                m_secondes = 59 - secondes
+                m_minutes = 4 - minutes
 
                 if m_secondes <= 0 and m_csecondes <= 90:
                     self.pausef()
@@ -223,7 +239,7 @@ class HEX:
                     if m_minutes == 0 and m_secondes <= 30:
                         self.temps[3].set("%02d:%02d:%02d" % (m_minutes, m_secondes, m_csecondes))
                         self.temps[4].set("%02d:%02d:%02d" % (m_minutes, m_secondes, m_csecondes))
-                        sleept = 80
+                        sleep_time = 80
                     else:
                         if m_csecondes > 0:
                             m_secondes += 1
@@ -234,15 +250,16 @@ class HEX:
                         self.temps[3].set("%02d:%02d" % (m_minutes, m_secondes))
                         self.temps[4].set("%02d:%02d" % (m_minutes, m_secondes))
 
-        self.fe.after(sleept, self.updateTime)
+        self.fe.after(sleep_time, self.update_time)
+
 
 setrecursionlimit(2000)
 
 hex = HEX()
-hex.graphiques()
+
+hex.ecran_accueil()
 
 hex.fe.bind("<f>", hex.plein_ecran)
 hex.fe.bind("<KeyPress-F11>", hex.plein_ecran)
-#hex.fe.bind("<Button-1>", hex.clic_gauche)
 
 hex.fe.mainloop()
