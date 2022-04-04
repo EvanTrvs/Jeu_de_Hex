@@ -1,22 +1,27 @@
 import sqlite3
+import numpy as np
 
 
 conn = sqlite3.connect('Jeu_HEX')
 cur = conn.cursor()
 
 def chargement(numero):
-    Reset()
 
     num = "'" + str(numero) + "'"
 
-    cur.execute("""SELECT Plateau, Taille, Ordre FROM Enregistrement WHERE Numero = """ + num + """ """)
+    cur.execute("""SELECT Plateau, Taille, Ordre, Players, Temps FROM Enregistrement WHERE Numero = """ + num + """ """)
     conn.commit()
     sauvegarde = cur.fetchall()
 
     sauvegardes = list(sauvegarde[0][0])
     taille_plat = int(sauvegarde[0][1])
     ordres = list(sauvegarde[0][2])
-
+    players = str (sauvegarde [0][3])
+    temps = bool (sauvegarde [0][4])
+    
+    print (type (sauvegardes), type (taille_plat), type (ordres), type (players), type (temps))
+    print (players [0])
+    print (temps)
     plato = []
     for i in sauvegardes:
         if i != "[" and i != "]" and i != "." and i != " " and i != "\n" and i != ",":
@@ -29,66 +34,71 @@ def chargement(numero):
 
     x = 0
     y = 0
-    plateau = np.zeros((taille_plat, taille_plat), dtype=int)
+    plat = np.zeros((taille_plat, taille_plat), dtype=int)
     for i in plato:
         if y == taille_plat:
             x += 1
             y = 0
 
-        plateau[x][y] = i
-
+        plat[x][y] = i
         y += 1
+    
 
-    self.Reset_Value(plateau, ordre)
-    self.load_plateau(plateau)
+    for i in range (len (players)):
+        if players [i] == '(':
+            player1 = str ((str (players [i+1]) + str (players [i+2]) + str (players [i+3]) + str (players [i+4]) + str (players [i+5])))
+        
+        elif players [i] == ',':
+            player2 = str ((str (players [i+2]) + str (players [i+3]) + str (players [i+4]) + str (players [i+5]) + str (players [i+6])))
+    
+    if player1 == 'False':
+        player1 = False
+        
+    if player2 == 'False':
+        player2 = False
+    
+    return plat, ordre, (player1, player2), temps
 
-    if numero == 1:
-        self.enregi1.configure(text='Enregistrement 1', command=lambda: self.enregistrement(1))
-        self.Affichage_plateau(plateau, taille_plat, self.scale)
-
-    elif numero == 2:
-        self.enregi2.configure(text='Enregistrement 2', command=lambda: self.enregistrement(2))
-        self.Affichage_plateau(plateau, taille_plat, self.scale)
-
-    elif numero == 3:
-        self.enregi3.configure(text='Enregistrement 3', command=lambda: self.enregistrement(3))
-        self.Affichage_plateau(plateau, taille_plat, self.scale)
-
-
-def enregistrement(numeros):
-    save = '"' + str(self.plat) + '"'
-    taille = '"' + str(self.size) + '"'
-    ordres = "'" + str(self.ordre) + "'"
+def enregistrement(plat, ordre, player, time, numeros):
+    save = '"' + str(plat) + '"'
+    taille = '"' + str(len (plat)) + '"'
+    ordres = "'" + str(ordre) + "'"
+    players = "'" + str(player) + "'"
+    times = "'" + str (time) + "'"
     nb = "'" + str(numeros) + "'"
-
+    
     cur.execute("""UPDATE Enregistrement SET Plateau = """ + save + """,
             Taille = """ + taille + """,
-            Ordre = """ + ordres + """
+            Ordre = """ + ordres + """,
+            Players = """ + players + """,
+            Temps = """ + times + """
             WHERE Numero = """ + nb + """ """)
     conn.commit()
-
-    self.Reset()
-
-    if numeros == 1:
-        enregi1.configure(text='Chargement 1', command=lambda: chargement(1))
-
-    elif numeros == 2:
-        enregi2.configure(text='Chargement 2', command=lambda: chargement(2))
-
-    elif numeros == 3:
-        enregi3.configure(text='Chargement 3', command=lambda: chargement(3))
 
 
 def reset_enregistrement():
     for i in range(1, 4):
         i = "'" + str(i) + "'"
 
-        cur.execute("""UPDATE Enregistrement SET Plateau = "", Taille = "", Ordre = "" WHERE Numero = """ + str(
+        cur.execute("""UPDATE Enregistrement SET Plateau = "", Taille = "", Ordre = "", Players = "", Temps = "" WHERE Numero = """ + str(
             i) + """ """)
         conn.commit()
 
-        self.Reset()
-
-        enregi1.configure(text='Enregistrement 1', command=lambda: enregistrement(1))
-        enregi2.configure(text='Enregistrement 2', command=lambda: enregistrement(2))
-        enregi3.configure(text='Enregistrement 3', command=lambda: enregistrement(3))
+def verif_enregistrement ():
+    verif = ['disabled', 'disabled', 'disabled']
+    for nb in range (1, 4):
+        cur.execute ("""SELECT Plateau, Taille, Ordre FROM Enregistrement WHERE Numero = """ + str (nb) + """ """)
+        conn.commit ()
+        demarrage = cur.fetchall ()
+            
+        if demarrage [0][0] != '' and demarrage [0][2] != "[]":
+            if nb == 1:
+                verif [0] = 'normal'
+        
+            elif nb == 2:
+                verif [0] = 'normal'
+        
+            elif nb == 3:
+                verif [0] = 'normal'
+                
+    return verif
