@@ -28,7 +28,6 @@ def propagation(slot, search, team, distance):
         if search[slot[0] - 1][slot[1]] == team or search[slot[0] - 1][slot[1]] > distance:
             propagation((slot[0] - 1, slot[1]), search, team, distance)
 
-
 def verrous(plat, team):
     size = len(plat)
 

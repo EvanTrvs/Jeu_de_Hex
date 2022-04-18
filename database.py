@@ -17,10 +17,10 @@ def chargement(numero):
     taille_plat = int(sauvegarde[0][1])
     ordres = list(sauvegarde[0][2])
     players = str (sauvegarde [0][3])
-    temps = bool (sauvegarde [0][4])
+    temps = str (sauvegarde [0][4])
     
+    print (sauvegarde)
     print (type (sauvegardes), type (taille_plat), type (ordres), type (players), type (temps))
-    print (players [0])
     print (temps)
     plato = []
     for i in sauvegardes:
@@ -57,21 +57,23 @@ def chargement(numero):
     if player2 == 'False':
         player2 = False
     
+    print(plat, ordre, (player1, player2), temps)
     return plat, ordre, (player1, player2), temps
 
 def enregistrement(plat, ordre, player, time, numeros):
+    print (plat, ordre, player, time, numeros)
     save = '"' + str(plat) + '"'
     taille = '"' + str(len (plat)) + '"'
     ordres = "'" + str(ordre) + "'"
     players = "'" + str(player) + "'"
-    times = "'" + str (time) + "'"
+    temps = "'" + str (time) + "'"
     nb = "'" + str(numeros) + "'"
     
     cur.execute("""UPDATE Enregistrement SET Plateau = """ + save + """,
             Taille = """ + taille + """,
             Ordre = """ + ordres + """,
             Players = """ + players + """,
-            Temps = """ + times + """
+            Temps = """ + temps + """
             WHERE Numero = """ + nb + """ """)
     conn.commit()
 
@@ -96,9 +98,9 @@ def verif_enregistrement ():
                 verif [0] = 'normal'
         
             elif nb == 2:
-                verif [0] = 'normal'
+                verif [1] = 'normal'
         
             elif nb == 3:
-                verif [0] = 'normal'
+                verif [2] = 'normal'
                 
     return verif
