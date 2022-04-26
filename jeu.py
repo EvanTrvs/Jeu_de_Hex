@@ -82,8 +82,8 @@ class HEX:
 
         affichage_plateau(self.partie1, self.plat, self.size, self.scale, self.width, self.height) #Création du plateau de jeu à partir de la matrice du plateau, de la taille du plateau et de la taille de la fenêtre principale
 
-        save1, save2, save3, restart, self.playbutton, tomenu = boutons_creations(self.frame, self.width) #Création des boutons de sauvegardes, de lancement du jeu et de la nouvelle partie
-        self.button_config(save1, save2, save3, restart, tomenu) #Configuration des boutons précédents
+        self.save1, self.save2, self.save3, restart, self.playbutton, tomenu = boutons_creations(self.frame, self.width) #Création des boutons de sauvegardes, de lancement du jeu et de la nouvelle partie
+        self.button_config(self.save1, self.save2, self.save3, restart, tomenu) #Configuration des boutons précédents
 
         self.fe.bind("<Button-1>", self.clic_gauche) #Intéraction sur le clique gauche, lançant la fonction ...
         self.fe.bind("<Escape>", self.ecran_accueil) #Intéraction sur la touche Echape, lançant la fonction de l'écran d'accueil
@@ -238,9 +238,13 @@ class HEX:
     def victoire(self): #fonction arrêtant la partie
         self.pausef()
         self.fe.unbind("<space>") #Empêchement de l'intéraction de la barre espace
-
+        
         self.frame1.config(bg="black")
         self.frame2.config(bg="black")
+        
+        self.save1 [0].config (self.save1 [1].entryconfig ("Enregistrer sur A", state = "disabled"))
+        self.save2 [0].config (self.save2 [1].entryconfig ("Enregistrer sur B", state = "disabled"))
+        self.save3 [0].config (self.save3 [1].entryconfig ("Enregistrer sur C", state = "disabled"))
 
         if len(self.ordre) > 1:
             self.partie1.itemconfig(str(self.ordre[-1][0]) + "," + str(self.ordre[-1][1]), dash="",outline='black', width=3)
@@ -295,6 +299,9 @@ class HEX:
             self.test_victoire(slot)
 
             if self.players[self.tour % 2] is True:
+                if self.timed is True: #Si les chronomètres individuels sont demandés
+                    if self.botcooldown < 1:
+                        self.sleep_time = int((1000* self.botcooldown)-50)
                 self.fe.update()
                 sleep(self.botcooldown)
                 self.nexts()
