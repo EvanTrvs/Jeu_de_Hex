@@ -1,5 +1,7 @@
 ## Voici le projet de Jeu de Hex que nous avons réalisé dans le cadre d'un projet informatique.
 
+Les Peip1 qui voient ça, attention de ne pas ce faire avoir sur un plagiat un peu trop rapide 
+
 ## Introduction au jeu
 Le jeu de Hex est un jeu de société combinatoire abstrait pour deux joueurs se jouant sur une grille en forme de losange dont les cases sont hexagonales.
 
