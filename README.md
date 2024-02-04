@@ -1,7 +1,7 @@
 # Développement d'une Interface complète pour le jeu de HEX
 
 ## Introduction
-Ce projet consiste à l'implémentation d'un jeu de société appelé HEX, accompagné de multiples fonctionnalités complémentaires allant de la sauvegarde de parties aux stratégies de jeu.
+Ce projet vise à implémenter le jeu de société HEX pour une utilisation complète, en ajoutant diverses fonctionnalités telles que la sauvegarde des parties et l'intégration de stratégies de jeu.
 
 ## Jeu de HEX
 Le [jeu de Hex](https://fr.wikipedia.org/wiki/Hex) est un jeu de société de plateau pour deux joueurs se déroulant sur une grille hexagonale en forme de losange. Conçu par des mathématiciens dans les années 40, c'est un jeu de stratégie combinatoire abstrait, asynchrone (tour à tour), fini, à information parfaite, sans hasard et match nul. Avec des règles simples, il offre une grande profondeur stratégique et est étudié dans divers domaines mathématiques.
@@ -27,36 +27,36 @@ de pions contigus de sa couleur a gagné.
 Téléchargement de toutes les sources du dépot [Jeu_de_Hex](https://github.com/EvanTrvs/Jeu_de_Hex).
 
 ### Dépendances
-Ce projet necessite [Python 3.x](https://www.python.org/downloads/) pour être exécuté.
-Des librairies sont requise, pour les installer aisément, nous conseillons l'utilisation d'[Anaconda](https://www.anaconda.com) ou autres IDE python.
+Ce projet nécessite [Python 3.x](https://www.python.org/downloads/) pour être exécuté. Des librairies sont requise, pour les installer aisément, nous conseillons l'utilisation d'[Anaconda](https://www.anaconda.com) ou autres IDE python.
   ```bash
   pip install numpy
   pip install tk
   pip install pillow
   ```
 ### Exécution
-Le fichier à exécuter est jeu.py
+Le fichier à exécuter est `jeu.py`.
   ```bash
   python jeu.py
   ```
 ### Illustration
 ![illustration des 3 vues](https://media.discordapp.net/attachments/1087514695268847656/1203761815008321586/image.png?ex=65d2458d&is=65bfd08d&hm=a2f5d0d2bdd818174d95333113514587b2bbd26311098b7831c79cdae984307e&=&format=webp&quality=lossless&width=820&height=671)
 
-## Configurations possibles
-* Taille du plateau
-* Mode de Jeu avec ou sans temps limité
-* Sélection : Joueur contre Joueur - Joueur contre Ordinateur - Ordinateur contre Ordinateur
-* Si Ordinateur, séléction de stratégie de jeu : Dénombrement ou Plus court chemin
-* Si deux Ordinateur, séléction 
+## Configurations Possibles
+- Taille du plateau (classique 11x11)
+- Mode de jeu avec ou sans temps limité
+- Sélection : Joueur contre Joueur - Joueur contre Ordinateur - Ordinateur contre Ordinateur
+- Si Ordinateur, sélection de stratégie de jeu : Dénombrement ou Plus court chemin
+- Si deux Ordinateurs, sélection du délai entre deux actions
 
 ## Fonctionnalités
 ### Fenêtre
-- Taille de fenêtre (Bouton +/- en haut a droite de l'accueil)
-- Plein écran (F11 ou Bouton en haut a droite de l'accueil)
-- Echap pour retourner en arrière ou quitter 
+- Taille de fenêtre (Bouton +/- en haut à droite de l'accueil)
+- Plein écran (F11 ou Bouton en haut à droite de l'accueil)
+- Echap pour revenir en arrière ou quitter
 
 ### Sauvegardes
-Possibilitées de Sauvegarde de partie, trois emplacements de sauvegarde disponible avec chargement et éditions de celles-ci.
+Possibilité de sauvegarder une partie en cours, avec trois emplacements de sauvegarde disponibles.
+Chargement d'une partie sauvegardée via l'écran d'accueil.
 
 ## Auteurs
 [EvanTrvs](https://github.com/EvanTrvs) et Thibaud, 2022
