@@ -1,4 +1,4 @@
-# Interface et fonctionnalités pour le jeu de HEX
+# Développement d'une Interface complète pour le jeu de HEX
 
 ## Projet de programmation
 ### Introduction
@@ -40,4 +40,4 @@ Le fichier à exécuter est jeu.py
 Possibilitées de Sauvegarde de partie, trois emplacements de sauvegarde disponible avec chargement et éditions de celles-ci.
 
 ### Auteurs
-@EvanTrvs & @CMoiTibo
+[EvanTrvs](https://github.com/EvanTrvs) et Thibaud
