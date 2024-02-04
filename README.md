@@ -25,7 +25,7 @@ de pions contigus de sa couleur a gagné.
 
 ## Installation éxécutable
 Téléchargement du dossier [Jeu Hex executable](https://github.com/EvanTrvs/Jeu_de_Hex/tree/Pr%C3%A9sentation-format/Jeu%20Hex%20executable) et extraction des deux archives.
-Ensuite éxécution de `Hex.exe`, nécessite d'être dans un dossier accompagné de "graphismes" et "Jeu_Hex".
+Ensuite éxécution de `Hex.exe`, nécessite d'être dans un dossier accompagné de `graphismes` et `Jeu_Hex`.
 
 ## Installation code source
 Téléchargement de toutes les sources de [Jeu Hex sources](https://github.com/EvanTrvs/Jeu_de_Hex/tree/Pr%C3%A9sentation-format/Jeu%20Hex%20sources).
@@ -54,7 +54,10 @@ Le fichier à exécuter est `jeu.py`.
 Le programme permet de choisir entre 3 modes de jeu, configurer la taille de l'application et mettre en plein écran (touche F11).
 De telle sorte que la personne qui lance le programme peux lancer soit un mode Joueur/Joueur(chacun son tour) ou Joueur/Ordinateur(un peu difficile) ou Ordinateur/Ordinateur(démonstration de jeu).
 Les modes sont préconfigurer, tous de taille de plateau 8x8, et une fois dans un mode, il est possible de relancer autant de partie que souhaité.
+
+
 Ainsi, une fois un mode lancé, le jeu peu être jouer avec seulement la souris, et contraint en plein écran pour garantir de rester dans le mode (pour quitter: echap ou fermer la fenêtre).
+Cela permet une utilisation robuste simple avec uniquement une souris et un écran, sans possibilité de fermeture ou de blocage, ce qui le rend idéal pour un accès libre à tous public.
 
 ### Fenêtre
 - Taille de fenêtre (Bouton +/- en haut à droite de l'accueil)
