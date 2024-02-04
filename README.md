@@ -20,18 +20,20 @@ définitivement, ils ne peuvent être ni retirés, ni déplacés.
 - Objectif : Le premier joueur qui réussit à relier ses deux bords par un chemin 
 de pions contigus de sa couleur a gagné.
 
-## Prérequis
-Ce projet necessite l'installation de Python 3.x pour être exécuté.
+![illustration plateau de jeu avec victoire](https://media.discordapp.net/attachments/1087514695268847656/1203760499402215534/image.png?ex=65d24453&is=65bfcf53&hm=85e037d4cbebf64f18080f56f104628da083317fb863f38199e0e9bdf441ea51&=&format=webp&quality=lossless)
 
-https://www.python.org/downloads/
+## Utilisation
+### Installation
+Téléchargement de toutes les sources du dépot [Jeu_de_Hex](https://github.com/EvanTrvs/Jeu_de_Hex).
 
-Certaine bibliotèques sont requise, pour les installer aisément, nous conseillons l'installation d'Anaconda et d'executer les fichiers avec Spyder.
-
-https://www.anaconda.com
-
-## Installation
-Il suffit de télécharger la source au format ZIP et de la décompresser.
-
+### Dépendances
+Ce projet necessite [Python 3.x](https://www.python.org/downloads/) pour être exécuté.
+Des librairies sont requise, pour les installer aisément, nous conseillons l'utilisation d'[Anaconda](https://www.anaconda.com) ou autres IDE python.
+  ```bash
+  pip install numpy
+  pip install tk
+  pip install pillow
+  ```
 ## Exécution
 Le fichier à exécuter est jeu.py
 
