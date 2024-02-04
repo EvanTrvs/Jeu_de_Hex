@@ -1,8 +1,7 @@
-# Développement d'une interface pour le jeu de HEX
+# Interface et fonctionnalités pour le jeu de HEX
 
 ### Auteurs
-Evan TORTEVOIS et Thibaud SCRIBE,
-2021/2022
+EvanTrvs & 
 
 ## Projet de programmation
 ### Introduction
