@@ -24,41 +24,42 @@ de pions contigus de sa couleur a gagné.
 ![illustration plateau de jeu avec victoire](https://media.discordapp.net/attachments/1087514695268847656/1203760499402215534/image.png?ex=65d24453&is=65bfcf53&hm=85e037d4cbebf64f18080f56f104628da083317fb863f38199e0e9bdf441ea51&=&format=webp&quality=lossless)
 
 ## Installation éxécutable
+Téléchargement du dossier [Jeu Hex executable](https://github.com/EvanTrvs/Jeu_de_Hex/tree/Pr%C3%A9sentation-format/Jeu%20Hex%20executable) et extraction des deux archives.
+Ensuite éxécution de `Hex.exe`, nécessite d'être dans un dossier accompagné de "graphismes" et "Jeu_Hex".
 
 ## Installation code source
-Téléchargement de toutes les sources du dépot [Jeu_de_Hex](https://github.com/EvanTrvs/Jeu_de_Hex).
+Téléchargement de toutes les sources de [Jeu Hex sources](https://github.com/EvanTrvs/Jeu_de_Hex/tree/Pr%C3%A9sentation-format/Jeu%20Hex%20sources).
 
-### Dépendances
 Ce projet nécessite [Python 3.x](https://www.python.org/downloads/) pour être exécuté. Des librairies sont requise, pour les installer aisément, nous conseillons l'utilisation d'[Anaconda](https://www.anaconda.com) ou autres IDE python.
   ```bash
   pip install numpy
   pip install tk
   pip install pillow
   ```
-### Exécution
 Le fichier à exécuter est `jeu.py`.
   ```bash
   python jeu.py
   ```
+
 ### Illustration
-![illustration des 3 vues](https://media.discordapp.net/attachments/1087514695268847656/1203761815008321586/image.png?ex=65d2458d&is=65bfd08d&hm=a2f5d0d2bdd818174d95333113514587b2bbd26311098b7831c79cdae984307e&=&format=webp&quality=lossless&width=820&height=671)
+![illustration accueil](https://media.discordapp.net/attachments/1087514695268847656/1203768380478201947/image.png?ex=65d24baa&is=65bfd6aa&hm=770c0515f1f99fc760780f904622661b0e303266fd250351cc2d15fd247e39d4&=&format=webp&quality=lossless)
+![illustration jeu](https://media.discordapp.net/attachments/1087514695268847656/1203768755461689404/image.png?ex=65d24c04&is=65bfd704&hm=4a53d0f0c2d26ca6da45e5151cc4022fca8172895809f03dc0c4e09d4c2d14b2&=&format=webp&quality=lossless)
 
 ## Configurations Possibles
-- Taille du plateau (classique 11x11)
-- Mode de jeu avec ou sans temps limité
-- Sélection : Joueur contre Joueur - Joueur contre Ordinateur - Ordinateur contre Ordinateur
-- Si Ordinateur, sélection de stratégie de jeu : Dénombrement ou Plus court chemin
-- Si deux Ordinateurs, sélection du délai entre deux actions
+- Mode Joueur contre Joueur : les joueurs placent des pions à tour de rôle en utilisant la souris.
+- Mode Joueur contre Ordinateur : le joueur rouge est un utilisateur qui place des pions à la souris, tandis que le joueur bleu est contrôlé par l'ordinateur.
+- Mode Ordinateur contre Ordinateur : une partie est jouée automatiquement entre deux joueurs ordinateurs.
 
-## Fonctionnalités
+### Démonstration
+Le programme permet de choisir entre 3 modes de jeu, configurer la taille de l'application et mettre en plein écran (touche F11).
+De telle sorte que la personne qui lance le programme peux lancer soit un mode Joueur/Joueur(chacun son tour) ou Joueur/Ordinateur(un peu difficile) ou Ordinateur/Ordinateur(démonstration de jeu).
+Les modes sont préconfigurer, tous de taille de plateau 8x8, et une fois dans un mode, il est possible de relancer autant de partie que souhaité.
+Ainsi, une fois un mode lancé, le jeu peu être jouer avec seulement la souris, et contraint en plein écran pour garantir de rester dans le mode (pour quitter: echap ou fermer la fenêtre).
+
 ### Fenêtre
 - Taille de fenêtre (Bouton +/- en haut à droite de l'accueil)
 - Plein écran (F11 ou Bouton en haut à droite de l'accueil)
 - Echap pour revenir en arrière ou quitter
-
-### Sauvegardes
-Possibilité de sauvegarder une partie en cours, avec trois emplacements de sauvegarde disponibles.
-Chargement d'une partie sauvegardée via l'écran d'accueil.
 
 ## Auteurs
 [EvanTrvs](https://github.com/EvanTrvs) et Thibaud, projet 2022
