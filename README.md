@@ -1,18 +1,24 @@
 # Développement d'une Interface complète pour le jeu de HEX
 
-## Projet de programmation
-### Introduction
+## Introduction
 Ce projet consiste à l'implémentation d'un jeu de société appelé HEX, accompagné de multiples fonctionnalités complémentaires allant de la sauvegarde de parties aux stratégies de jeu.
 
-## Introduction au jeu
-Le jeu de Hex est un jeu de société combinatoire abstrait pour deux joueurs se jouant sur une grille en forme de losange dont les cases sont hexagonales.
+## Jeu de HEX
+Le jeu de Hex est un jeu de société de plateau pour deux joueurs se déroulant sur une grille hexagonale en forme de losange. Conçu par des mathématiciens dans les années 40, c'est un jeu de stratégie combinatoire abstrait, asynchrone (tour à tour), fini, à information parfaite, sans hasard et match nul. Avec des règles simples, il offre une grande profondeur stratégique et est étudié dans divers domaines mathématiques.
 
-Chaque joueur est représenté par une couleur et possède des pions qu'il dispose un par un lorque c'est son tour sur une case de son choix. 
-L'objectif est de relier les deux côtés opposés de sa couleur sur la grille. 
-
-Inventé par des mathématiciens, ce jeu fait uniquement appel à la logique et est ainsi étudié dans diverses branches mathématiques comme la théorie des jeux, la topologie ou encore la géométrie algébrique.
-
-Le but de ce projet est l’implémentation du jeu Hex et l’étude de stratégies gagnantes.
+### Règles du jeu
+- Nombre de joueurs : 2
+- Matériel : Un plateau de jeu, des pions rouges et des pions bleues.
+Le plateau du jeu de Hex est composé de cases hexagonales formant un 
+losange. La taille du plateau peut varier (habituellement 6x6, 9x9 ou 11x11). 
+Deux cotés opposés du losange sont rouges, les deux autres sont bleues.
+- Préparation : Le plateau est vide
+- Déroulement : Le joueur rouge commence. Les joueurs jouent chacun leur 
+tour. À chaque tour, le joueur place un pion de sa couleur sur une case libre 
+du plateau. Il ne peut y avoir qu'un pion par case. Les pions posés le sont 
+définitivement, ils ne peuvent être ni retirés, ni déplacés.
+- Objectif : Le premier joueur qui réussit à relier ses deux bords par un chemin 
+de pions contigus de sa couleur a gagné.
 
 ## Prérequis
 Ce projet necessite l'installation de Python 3.x pour être exécuté.
