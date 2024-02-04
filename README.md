@@ -2,7 +2,7 @@
 
 ## Projet de programmation
 ### Introduction
-Ce projet consiste  à mettre en œuvre et optimiser l'algorithme de segmentation d'image "Split and Merge" pour des images médicales en trois dimensions (3D). Il s'inscrit dans le cadre du projet de PeiP (Parcours des écoles d’ingénieurs Polytech), cursus préparatoire intégré à l'École Polytech Tours.
+Ce projet consiste à l'implémentation d'un jeu de société appelé HEX, accompagné de multiples fonctionnalités complémentaires allant de la sauvegarde de parties aux stratégies de jeu.
 
 ## Introduction au jeu
 Le jeu de Hex est un jeu de société combinatoire abstrait pour deux joueurs se jouant sur une grille en forme de losange dont les cases sont hexagonales.
