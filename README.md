@@ -66,4 +66,5 @@ Cela permet une utilisation robuste simple avec uniquement une souris et un écr
 
 ## Auteurs
 [EvanTrvs](https://github.com/EvanTrvs) et Thibaud, projet 2022
+
 [EvanTrvs](https://github.com/EvanTrvs), adaptation 2024
