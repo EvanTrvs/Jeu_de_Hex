@@ -49,14 +49,14 @@ Le fichier à exécuter est jeu.py
 * Si Ordinateur, séléction de stratégie de jeu : Dénombrement ou Plus court chemin
 * Si deux Ordinateur, séléction 
 
-### Fonctionnalités
-## Fenêtre
+## Fonctionnalités
+### Fenêtre
 - Taille de fenêtre (Bouton +/- en haut a droite de l'accueil)
 - Plein écran (F11 ou Bouton en haut a droite de l'accueil)
 - Echap pour retourner en arrière ou quitter 
 
-## Sauvegardes
+### Sauvegardes
 Possibilitées de Sauvegarde de partie, trois emplacements de sauvegarde disponible avec chargement et éditions de celles-ci.
 
-### Auteurs
-[EvanTrvs](https://github.com/EvanTrvs) et Thibaud
+## Auteurs
+[EvanTrvs](https://github.com/EvanTrvs) et Thibaud, 2022
