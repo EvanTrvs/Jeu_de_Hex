@@ -1,4 +1,11 @@
-## Voici le projet de Jeu de Hex que nous avons réalisé dans le cadre d'un projet informatique.
+# Développement d'une interface pour le jeu de HEX
+
+### Auteurs
+Evan TORTEVOIS et Thibaud SCRIBE
+
+## Projet de programmation
+### Introduction
+Ce projet consiste  à mettre en œuvre et optimiser l'algorithme de segmentation d'image "Split and Merge" pour des images médicales en trois dimensions (3D). Il s'inscrit dans le cadre du projet de PeiP (Parcours des écoles d’ingénieurs Polytech), cursus préparatoire intégré à l'École Polytech Tours.
 
 ## Introduction au jeu
 Le jeu de Hex est un jeu de société combinatoire abstrait pour deux joueurs se jouant sur une grille en forme de losange dont les cases sont hexagonales.
