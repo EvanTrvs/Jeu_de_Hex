@@ -39,7 +39,7 @@ Le fichier à exécuter est jeu.py
   ```bash
   python jeu.py
   ```
-### Exemples
+### Illustration
 ![illustration des 3 vues](https://media.discordapp.net/attachments/1087514695268847656/1203761815008321586/image.png?ex=65d2458d&is=65bfd08d&hm=a2f5d0d2bdd818174d95333113514587b2bbd26311098b7831c79cdae984307e&=&format=webp&quality=lossless&width=820&height=671)
 
 ## Configurations possibles
