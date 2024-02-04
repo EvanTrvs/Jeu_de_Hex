@@ -1,8 +1,5 @@
 # Interface et fonctionnalités pour le jeu de HEX
 
-### Auteurs
-EvanTrvs & 
-
 ## Projet de programmation
 ### Introduction
 Ce projet consiste  à mettre en œuvre et optimiser l'algorithme de segmentation d'image "Split and Merge" pour des images médicales en trois dimensions (3D). Il s'inscrit dans le cadre du projet de PeiP (Parcours des écoles d’ingénieurs Polytech), cursus préparatoire intégré à l'École Polytech Tours.
@@ -42,5 +39,5 @@ Le fichier à exécuter est jeu.py
 ## Sauvegardes
 Possibilitées de Sauvegarde de partie, trois emplacements de sauvegarde disponible avec chargement et éditions de celles-ci.
 
-## Créateurs
-Thibaud et Evan
+### Auteurs
+@EvanTrvs & @CMoiTibo
