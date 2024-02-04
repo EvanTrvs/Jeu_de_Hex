@@ -1,7 +1,7 @@
 # Développement d'une interface pour le jeu de HEX
 
 ### Auteurs
-Evan TORTEVOIS et Thibaud SCRIBE
+Evan TORTEVOIS et Thibaud SCRIBE,
 2021/2022
 
 ## Projet de programmation
